@@ -2,7 +2,7 @@
  * app.js - Full Code Update
  */
 
-const bestSellerMenu = { id: "bs1", name: "Wedang Jahe Merah", price: 7000, desc: "Hangatnya jahe merah asli pilihan.", img: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=600&auto=format&fit=crop" };
+const bestSellerMenu = { id: "bs1", name: "Wedang Jahe Merah", price: 8000, desc: "Hangatnya jahe merah asli pilihan.", img: "wedang.jpg" };
 const menuData = [
     { id: "g1", groupName: "Aneka Sate Bakar", desc: "Sate khas angkringan dibakar dadakan.", img: "sate.jpeg", variants: [{ id: "v1", name: "Sate Usus", price: 3000 }, { id: "v2", name: "Sate Telur Puyuh", price: 3000 }, { id: "v3", name: "Sate Kikil", price: 3000 }, { id: "v4", name: "Sate Ati Ampela", price: 3000 },] },
     { id: "g4", groupName: "Nasi Bakar", desc: "Nasi pulen gurih dibalut daun pisang.", img: "nasbak.jpeg", variants: [{ id: "v13", name: "Nasi Bakar Cumi", price: 8000 }, { id: "v14", name: "Nasi Bakar Tongkol", price: 8000 }, { id: "v15", name: "Nasi Bakar Ayam Suir", price: 8000 }] },
@@ -359,7 +359,6 @@ function updateCartUI() {
 
         cart.forEach(item => {
             subtotal += item.price * item.qty;
-            // Desain Card Item Keranjang Lebih Clean
             list.innerHTML += `
                 <div class="flex justify-between items-center bg-wood p-4 rounded-xl border border-wood shadow-sm relative overflow-hidden group">
                     <div class="absolute left-0 top-0 bottom-0 w-1 bg-wood group-hover:bg-ember transition-colors"></div>
@@ -377,11 +376,22 @@ function updateCartUI() {
         });
     }
 
+    // Kalkulasi Total
     document.getElementById('cartSubtotal').innerText = `Rp ${subtotal.toLocaleString('id-ID')}`;
     let finalTotal = subtotal + (deliveryMethod === 'delivery' ? shippingCost : 0);
     document.getElementById('cartTotal').innerText = `Rp ${finalTotal.toLocaleString('id-ID')}`;
-}
 
+    // --- LOGIKA UNTUK MENAMPILKAN / MENYEMBUNYIKAN ONGKIR ---
+    const shippingRow = document.getElementById('shippingRow');
+    if (deliveryMethod === 'delivery' && locationDetected && userDistance <= 4) {
+        // Tampilkan baris ongkir jika delivery dipilih dan lokasi valid
+        shippingRow.classList.remove('hidden');
+        document.getElementById('cartShipping').innerText = `Rp ${shippingCost.toLocaleString('id-ID')}`;
+    } else {
+        // Sembunyikan baris ongkir jika dine-in atau lokasi belum dideteksi/kejauhan
+        shippingRow.classList.add('hidden');
+    }
+}
 function toggleCart() {
     const modal = document.getElementById('cartModal');
     const sidebar = document.getElementById('cartSidebar');
