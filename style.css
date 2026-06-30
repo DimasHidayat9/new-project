@@ -1,0 +1,182 @@
+/* style.css - Angkringan Senthir Custom Styles
+   Palet: arang kayu hangat + nyala api senthir (bukan dark-mode SaaS biasa) */
+
+/* 1. Base Setup & Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #0f0c09; /* darker */
+}
+::-webkit-scrollbar-thumb {
+    background: #3a2f24; /* wood */
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #e8631c; /* ember */
+}
+
+/* Utilitas untuk menyembunyikan scrollbar di modal keranjang */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* 2. Glassmorphism & Shadows */
+.glass {
+    background: rgba(42, 34, 26, 0.45); /* wood2 transparan */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(232, 99, 28, 0.12);
+}
+
+.glass-nav {
+    background: rgba(15, 12, 9, 0.88); /* darker/88 */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.shadow-glow {
+    box-shadow: 0 4px 24px -4px rgba(232, 99, 28, 0.28);
+    transition: box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shadow-glow:hover {
+    box-shadow: 0 10px 32px -6px rgba(232, 99, 28, 0.45);
+}
+
+/* 3. Image Hover Interactions */
+.hover-zoom {
+    overflow: hidden;
+}
+.hover-zoom img {
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.hover-zoom:hover img {
+    transform: scale(1.08);
+}
+
+/* Menu Card — sudut dipotong asimetris, terasa "ditempa" bukan kotak generik */
+.menu-card {
+    background: linear-gradient(160deg, #271e15 0%, #221a12 100%);
+    border: 1px solid #3a2f24;
+    border-radius: 1.75rem 1.75rem 0.5rem 1.75rem;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+    position: relative;
+}
+.menu-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(244, 196, 48, 0.5), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+.menu-card:hover {
+    border-color: rgba(232, 99, 28, 0.5);
+    transform: translateY(-6px);
+    box-shadow: 0 24px 32px -8px rgba(0, 0, 0, 0.55), 0 10px 14px -8px rgba(232, 99, 28, 0.16);
+}
+.menu-card:hover::before {
+    opacity: 1;
+}
+
+/* Wick flame — elemen tanda tangan visual situs ini */
+.wick-flame {
+    display: inline-block;
+}
+.wick-flame .flame-core {
+    transform-origin: 50% 100%;
+    animation: flicker 2.6s ease-in-out infinite;
+}
+.wick-flame .flame-inner {
+    transform-origin: 50% 100%;
+    animation: flicker 2.6s ease-in-out infinite reverse;
+    animation-delay: -0.4s;
+}
+@keyframes flicker {
+    0%, 100% { transform: scaleY(1) scaleX(1) rotate(0deg); }
+    25% { transform: scaleY(1.05) scaleX(0.96) rotate(-1.5deg); }
+    50% { transform: scaleY(0.96) scaleX(1.04) rotate(1deg); }
+    75% { transform: scaleY(1.03) scaleX(0.98) rotate(-0.5deg); }
+}
+
+/* 4. Custom Animations */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Pulsasi nyala untuk ikon penting (dipakai jarang/sengaja) */
+@keyframes pulseEmber {
+    0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(232, 99, 28, 0.7)); }
+    50% { transform: scale(1.08); filter: drop-shadow(0 0 12px rgba(232, 99, 28, 0.9)); }
+    100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(232, 99, 28, 0.7)); }
+}
+.pulse-amber {
+    animation: pulseEmber 2.2s infinite;
+}
+
+/* Smooth Slide Down untuk area form yang muncul dinamis */
+@keyframes slideDownForm {
+    from {
+        opacity: 0;
+        max-height: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        max-height: 600px;
+        transform: translateY(0);
+    }
+}
+.form-slide-down {
+    animation: slideDownForm 0.4s ease-out forwards;
+}
+
+/* Garis bertekstur halus untuk pemisah bagian — kesan "kayu lapuk", bukan hairline digital */
+.divider-ember {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(232, 99, 28, 0.4), transparent);
+}
+
+/* Twinkle bintang ulasan — halus, tidak mengganggu, beda fase tiap bintang */
+@keyframes starTwinkle {
+    0%, 100% { opacity: 0.55; transform: scale(0.92); }
+    50% { opacity: 1; transform: scale(1.05); filter: drop-shadow(0 0 4px rgba(244, 196, 48, 0.5)); }
+}
+.star-twinkle {
+    display: inline-block;
+    animation: starTwinkle 2.4s ease-in-out infinite;
+}
+
+/* Micro-interactions — sentuhan halus yang membedakan dari template generik */
+button, a {
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+button:active {
+    transform: scale(0.97);
+}
+
+input:focus, textarea:focus {
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Transisi tampilan antar section dibuat lebih halus, bukan potongan kasar */
+#homeView, #menuView {
+    transition: opacity 0.3s ease;
+}

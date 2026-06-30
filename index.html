@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angkringan Senthir - Kuliner Malam Premium di Bawah Cahaya Senthir</title>
+    <meta name="description" content="Angkringan Senthir menghadirkan kuliner malam premium: sate bakar, nasi bakar, gorengan, baceman, hingga wedang hangat. Pesan online via WhatsApp, makan di tempat atau diantar. Buka setiap hari 18:00-00:00 WIB.">
+    <meta name="keywords" content="angkringan, angkringan senthir, kuliner malam, sate bakar, nasi bakar, wedang jahe, angkringan terdekat, pesan online angkringan">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://angkringansenthir.com/">
+
+    <!-- Open Graph / Facebook & WhatsApp Preview -->
+    <meta property="og:type" content="restaurant.menu">
+    <meta property="og:url" content="https://angkringansenthir.com/">
+    <meta property="og:site_name" content="Angkringan Senthir">
+    <meta property="og:title" content="Angkringan Senthir - Kuliner Malam Premium">
+    <meta property="og:description" content="Kenyamanan rasa di bawah cahaya senthir. Sate bakar, nasi bakar, gorengan, dan wedang hangat — pesan online atau datang langsung. Buka tiap malam 18:00-00:00 WIB.">
+    <meta property="og:image" content="https://angkringansenthir.com/about.jpeg">
+    <meta property="og:locale" content="id_ID">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Angkringan Senthir - Kuliner Malam Premium">
+    <meta name="twitter:description" content="Kenyamanan rasa di bawah cahaya senthir. Sate bakar, nasi bakar, gorengan, dan wedang hangat — pesan online atau datang langsung.">
+    <meta name="twitter:image" content="https://angkringansenthir.com/about.jpeg">
+
+    <!-- Structured Data: LocalBusiness -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Angkringan Senthir",
+      "description": "Kuliner malam premium khas angkringan: sate bakar, nasi bakar, gorengan, baceman, dan wedang hangat.",
+      "image": "https://angkringansenthir.com/about.jpeg",
+      "url": "https://angkringansenthir.com/",
+      "telephone": "+6285880706634",
+      "servesCuisine": ["Indonesian", "Angkringan", "Street Food"],
+      "priceRange": "Rp2.000 - Rp10.000",
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -6.397954,
+        "longitude": 107.076784
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          "opens": "18:00",
+          "closes": "23:59"
+        }
+      ],
+      "sameAs": [
+        "https://www.instagram.com/angkringan_senthir?igsh=MWN1MzR0aGdyN2V1eA%3D%3D&utm_source=qr",
+        "https://www.tiktok.com/@angkringan.senthir?_r=1&_t=ZS-972gylG6uoe"
+      ]
+    }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#1a1410',
+                        darker: '#0f0c09',
+                        wood: '#3a2f24',
+                        wood2: '#2a221a',
+                        parchment: '#d4c5a9',
+                        ember: '#e8631c',
+                        emberHover: '#c4501a',
+                        flame: '#f4c430',
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['Fraunces', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fraunces:opsz,wght,ital@9..144,400;9..144,600;9..144,700;9..144,900;9..144,1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-dark text-parchment font-sans antialiased pb-20 md:pb-0 selection:bg-ember selection:text-darker">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-20 left-1/2 transform -translate-x-1/2 z-[100] bg-green-500 text-white px-6 py-3 rounded-full shadow-lg font-semibold text-sm transition-all duration-300 opacity-0 pointer-events-none translate-y-[-20px]">
+        <i class="fa-solid fa-check-circle mr-2"></i> Berhasil masuk keranjang!
+    </div>
+
+    <!-- Store Closed Overlay -->
+    <div id="closedOverlay" class="fixed inset-0 z-[100] bg-dark/95 backdrop-blur-md flex-col items-center justify-center hidden">
+        <svg class="wick-flame mb-6" width="46" height="60" viewBox="0 0 20 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path class="flame-core" d="M10 2C10 2 4 9 4 15C4 19.4 6.7 23 10 23C13.3 23 16 19.4 16 15C16 9 10 2 10 2Z" fill="#3a2f24"/>
+            <path class="flame-inner" d="M10 9C10 9 7.5 13 7.5 16.5C7.5 18.9 8.6 20.5 10 20.5C11.4 20.5 12.5 18.9 12.5 16.5C12.5 13 10 9 10 9Z" fill="#2a221a"/>
+            <rect x="9.3" y="22.5" width="1.4" height="2.5" rx="0.5" fill="#3a2f24"/>
+        </svg>
+        <h2 class="font-serif text-4xl text-ember font-bold mb-2 text-center">Kami Sedang Istirahat</h2>
+        <p class="text-parchment text-lg text-center max-w-md px-6">Buka setiap hari mulai <span class="font-bold text-white">18:00 WIB</span> hingga <span class="font-bold text-white">00:00 WIB</span>.</p>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="fixed w-full top-0 z-40 glass-nav transition-all duration-300 border-b border-wood">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" onclick="switchView('home')" class="font-serif text-2xl font-bold text-ember flex items-center gap-2">
+                <svg class="wick-flame" width="20" height="26" viewBox="0 0 20 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path class="flame-core" d="M10 2C10 2 4 9 4 15C4 19.4 6.7 23 10 23C13.3 23 16 19.4 16 15C16 9 10 2 10 2Z" fill="#e8631c"/>
+                    <path class="flame-inner" d="M10 9C10 9 7.5 13 7.5 16.5C7.5 18.9 8.6 20.5 10 20.5C11.4 20.5 12.5 18.9 12.5 16.5C12.5 13 10 9 10 9Z" fill="#f4c430"/>
+                    <rect x="9.3" y="22.5" width="1.4" height="2.5" rx="0.5" fill="#3a2f24"/>
+                </svg>
+                Senthir
+            </a>
+            <nav class="hidden md:flex gap-8 items-center">
+                <button onclick="switchView('home')" class="hover:text-ember transition-colors font-medium">Beranda</button>
+                <button onclick="switchView('menu')" class="hover:text-ember transition-colors font-medium text-ember">Menu Makanan</button>
+                <button onclick="toggleCart()" class="relative bg-ember text-dark px-5 py-2 rounded-full font-bold hover:bg-emberHover transition-transform hover:scale-105 shadow-glow">
+                    <i class="fa-solid fa-basket-shopping mr-2"></i> Keranjang
+                    <span id="cartBadgeDesk" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- TAMPILAN BERANDA -->
+        <div id="homeView" class="block animate-fade-in-up">
+            <!-- Hero Section -->
+            <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+                <div class="absolute inset-0 z-0">
+                    <img src="bg.png" alt="Angkringan" class="w-full h-full object-cover opacity-25" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/85 to-dark/40"></div>
+                    <div class="absolute inset-0" style="background: radial-gradient(ellipse 60% 50% at 50% 70%, rgba(232,99,28,0.18), transparent 70%);"></div>
+                </div>
+                <div class="container mx-auto px-6 relative z-10 text-center">
+                    <span class="text-ember tracking-[0.2em] text-sm md:text-base font-semibold uppercase mb-4 block">Kuliner Malam Premium</span>
+                    <h1 class="font-serif text-5xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-2xl">
+                        Kenyamanan Rasa<br>di Bawah Cahaya <span class="text-ember italic">Senthir</span>
+                    </h1>
+                    <p class="text-parchment text-lg md:text-xl max-w-2xl mx-auto mb-10">Menghidangkan tradisi dalam balutan kemewahan sederhana. Nikmati kehangatan angkringan modern dengan kualitas bahan terbaik.</p>
+                    <button onclick="switchView('menu')" class="inline-block bg-ember text-dark px-8 py-4 rounded-full font-bold text-lg hover:bg-emberHover transition-all hover:scale-105 shadow-glow">
+                        Lihat Menu Kami
+                    </button>
+                </div>
+            </section>
+
+            <!-- Statistik Section -->
+            <section class="py-14 bg-darker border-y border-wood">
+                <div class="container mx-auto px-6">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        <div class="text-center">
+                            <div class="flex items-center justify-center gap-1 mb-1">
+                                <span class="counter-num font-serif text-3xl md:text-5xl font-bold text-ember" data-target="500" data-suffix="+">0</span>
+                            </div>
+                            <p class="text-parchment/60 text-xs md:text-sm tracking-wide">Pelanggan Puas</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="flex items-center justify-center gap-1 mb-1">
+                                <span class="counter-num font-serif text-3xl md:text-5xl font-bold text-ember" data-target="15" data-suffix="+">0</span>
+                            </div>
+                            <p class="text-parchment/60 text-xs md:text-sm tracking-wide">Varian Menu</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="flex items-center justify-center gap-1 mb-1">
+                                <span class="counter-num font-serif text-3xl md:text-5xl font-bold text-ember" data-target="4.8" data-suffix="" data-decimal="1">0</span>
+                            </div>
+                            <p class="text-parchment/60 text-xs md:text-sm tracking-wide">Rating Pelanggan</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="flex items-center justify-center gap-1 mb-1">
+                                <span class="counter-num font-serif text-3xl md:text-5xl font-bold text-ember" data-target="6" data-suffix="" data-prefix="" data-text-suffix=" Hari">0</span>
+                            </div>
+                            <p class="text-parchment/60 text-xs md:text-sm tracking-wide">Buka Setiap Minggu</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Menu Andalan Section -->
+            <section class="py-24 bg-wood2/30">
+                <div class="container mx-auto px-6">
+                    <div class="text-center mb-14">
+                        <span class="text-ember tracking-[0.2em] text-xs md:text-sm font-semibold uppercase mb-3 block">Paling Sering Dipesan</span>
+                        <h2 class="font-serif text-4xl font-bold text-white">Menu <span class="text-ember">Andalan</span></h2>
+                        <p class="text-parchment/70 mt-3 max-w-xl mx-auto">Empat sajian favorit yang paling sering disebut pelanggan kami</p>
+                    </div>
+                    <div id="featuredMenuGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+                    <div class="text-center mt-12">
+                        <button onclick="switchView('menu')" class="inline-flex items-center gap-2 border border-ember text-ember hover:bg-ember hover:text-darker px-8 py-3.5 rounded-full font-bold transition-all">
+                            Lihat Semua Menu <i class="fa-solid fa-arrow-right text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section class="py-24 bg-dark">
+                <div class="container mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+                    <div class="w-full md:w-1/2 rounded-3xl overflow-hidden shadow-[0_0_40px_rgba(232,99,28,0.1)]">
+                        <img src="about.jpeg" alt="Sate Angkringan" class="w-full h-auto hover-zoom" />
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <h2 class="font-serif text-4xl font-bold text-white mb-6">Cerita di Balik <span class="text-ember">Senthir</span></h2>
+                        <p class="text-parchment leading-relaxed mb-4 text-lg">Terinspirasi dari lampu minyak tradisional yang selalu menerangi malam, Angkringan Senthir hadir untuk memberikan kehangatan bagi para penikmat kuliner malam.</p>
+            </section>
+
+            <!-- Keunggulan Section -->
+            <section class="py-24 bg-wood2/50">
+                <div class="container mx-auto px-6">
+                    <div class="text-center mb-14">
+                        <h2 class="font-serif text-4xl font-bold text-white">Kenapa Pilih <span class="text-ember">Senthir</span></h2>
+                        <p class="text-parchment/70 mt-3">Bukan angkringan biasa, ini standar yang kami pegang tiap malam</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-wood p-8 rounded-3xl border border-wood text-center">
+                            <div class="w-16 h-16 bg-ember/10 border border-ember/30 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                                <i class="fa-solid fa-leaf text-ember text-2xl"></i>
+                            </div>
+                            <h3 class="text-white font-bold text-lg mb-2">Bahan Segar Tiap Hari</h3>
+                            <p class="text-parchment/70 text-sm leading-relaxed">Belanja bahan baku setiap hari, tanpa stok menginap, supaya rasa selalu konsisten.</p>
+                        </div>
+                        <div class="bg-wood p-8 rounded-3xl border border-wood text-center">
+                            <div class="w-16 h-16 bg-ember/10 border border-ember/30 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                                <i class="fa-solid fa-shield-heart text-ember text-2xl"></i>
+                            </div>
+                            <h3 class="text-white font-bold text-lg mb-2">Higienis & Terjaga</h3>
+                            <p class="text-parchment/70 text-sm leading-relaxed">Proses masak dan kemasan mengikuti standar kebersihan, bukan sekadar gerobak pinggir jalan.</p>
+                        </div>
+                        <div class="bg-wood p-8 rounded-3xl border border-wood text-center">
+                            <div class="w-16 h-16 bg-ember/10 border border-ember/30 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                                <i class="fa-solid fa-motorcycle text-ember text-2xl"></i>
+                            </div>
+                            <h3 class="text-white font-bold text-lg mb-2">Cepat Diantar</h3>
+                            <p class="text-parchment/70 text-sm leading-relaxed">Estimasi ongkir dan jarak dihitung otomatis sebelum kamu checkout, tidak ada kejutan harga.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Review Section -->
+            <section class="py-24 bg-wood2/50">
+                <div class="container mx-auto px-6 text-center">
+                    <h2 class="font-serif text-4xl font-bold text-white mb-4">Kata <span class="text-ember">Mereka</span></h2>
+                    <p class="text-parchment/70 mb-12">Kisah hangat dari pelanggan setia Senthir</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+                        <!-- Review 1 -->
+                        <div class="bg-wood p-8 rounded-3xl relative border border-wood">
+                            <div class="flex gap-1 text-flame mb-4 text-sm">
+                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0s"></i>
+                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.15s"></i>
+                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.3s"></i>
+                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.45s"></i>
+                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.6s"></i>
+                            </div>
+                            <span class="font-serif text-5xl text-ember/30 leading-none block mb-2">&ldquo;</span>
+                            <p class="text-parchment italic -mt-4">Nasi bakar cuminya juara! Varian lauknya lengkap banget dan pelayanannya bersih. Tempat nongkrong favorit tiap malem minggu.</p>
+                            <h4 class="text-white font-bold mt-6">— Budi S.</h4>
+                        </div>
+                        <!-- Review 2 -->
+                        <div class="bg-wood p-8 rounded-3xl relative border border-ember/50 shadow-[0_0_15px_rgba(232,99,28,0.15)] transform md:-translate-y-4">
+                            <div class="flex gap-1 text-flame mb-4 text-sm">
+                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.1s"></i>
+                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.25s"></i>
+                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.4s"></i>
+                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.55s"></i>
+                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.7s"></i>
+                            </div>
+                            <span class="font-serif text-5xl text-ember/30 leading-none block mb-2">&ldquo;</span>
+                            <p class="text-parchment italic -mt-4">Gorengan mendoan pas ujan-ujan dipadukan wedang uwuh... rasanya kayak pelukan hangat. Rekomen banget!</p>
+                            <h4 class="text-white font-bold mt-6">— Rina M.</h4>
+                        </div>
+                        <!-- Review 3 -->
+                        <div class="bg-wood p-8 rounded-3xl relative border border-wood">
+                            <div class="flex gap-1 text-flame mb-4 text-sm">
+                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.05s"></i>
+                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.2s"></i>
+                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.35s"></i>
+                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.5s"></i>
+                                <i class="fa-solid fa-star-half-stroke star-twinkle" style="animation-delay:0.65s"></i>
+                            </div>
+                            <span class="font-serif text-5xl text-ember/30 leading-none block mb-2">&ldquo;</span>
+                            <p class="text-parchment italic -mt-4">Ongkirnya jujur dan murah buat jarak deket. Makanannya nyampe masih anget banget. Top deh buat adminnya yang fast respon!</p>
+                            <h4 class="text-white font-bold mt-6">— Dimas H.</h4>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Galeri Section -->
+            <section class="py-24 bg-dark">
+                <div class="container mx-auto px-6">
+                    <div class="text-center mb-14">
+                        <span class="text-ember tracking-[0.2em] text-xs md:text-sm font-semibold uppercase mb-3 block">Sekilas Suasana</span>
+                        <h2 class="font-serif text-4xl font-bold text-white">Galeri <span class="text-ember">Senthir</span></h2>
+                        <p class="text-parchment/70 mt-3 max-w-xl mx-auto">Cuplikan suasana hangat dan sajian khas yang menemani malam-malam kalian</p>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[160px] md:auto-rows-[180px]">
+                        <button onclick="openGalleryLightbox(0)" class="hover-zoom rounded-2xl overflow-hidden col-span-2 row-span-2 relative group">
+                            <img src="about.jpeg" alt="Suasana Angkringan Senthir" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-darker/0 group-hover:bg-darker/30 transition-colors flex items-center justify-center">
+                                <i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 transition-opacity text-2xl"></i>
+                            </div>
+                        </button>
+                        <button onclick="openGalleryLightbox(1)" class="hover-zoom rounded-2xl overflow-hidden relative group">
+                            <img src="sate.jpeg" alt="Sate Bakar Senthir" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-darker/0 group-hover:bg-darker/30 transition-colors flex items-center justify-center">
+                                <i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 transition-opacity text-2xl"></i>
+                            </div>
+                        </button>
+                        <button onclick="openGalleryLightbox(2)" class="hover-zoom rounded-2xl overflow-hidden relative group">
+                            <img src="nasbak.jpeg" alt="Nasi Bakar Senthir" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-darker/0 group-hover:bg-darker/30 transition-colors flex items-center justify-center">
+                                <i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 transition-opacity text-2xl"></i>
+                            </div>
+                        </button>
+                        <button onclick="openGalleryLightbox(3)" class="hover-zoom rounded-2xl overflow-hidden relative group">
+                            <img src="kopi.jpeg" alt="Kopi Senthir" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-darker/0 group-hover:bg-darker/30 transition-colors flex items-center justify-center">
+                                <i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 transition-opacity text-2xl"></i>
+                            </div>
+                        </button>
+                        <button onclick="openGalleryLightbox(4)" class="hover-zoom rounded-2xl overflow-hidden relative group">
+                            <img src="g.jpeg" alt="Gorengan Senthir" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-darker/0 group-hover:bg-darker/30 transition-colors flex items-center justify-center">
+                                <i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 transition-opacity text-2xl"></i>
+                            </div>
+                        </button>
+                        <button onclick="openGalleryLightbox(5)" class="hover-zoom rounded-2xl overflow-hidden relative group">
+                            <img src="es.jpeg" alt="Minuman Dingin Senthir" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-darker/0 group-hover:bg-darker/30 transition-colors flex items-center justify-center">
+                                <i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 transition-opacity text-2xl"></i>
+                            </div>
+                        </button>
+                    </div>
+                    <p class="text-parchment/40 text-xs text-center mt-6 italic">* Foto suasana asli menyusul — saat ini menampilkan cuplikan dari foto menu yang sudah tersedia.</p>
+                </div>
+            </section>
+
+
+<section class="py-24 bg-dark">
+    <div class="container mx-auto px-6">
+        <h2 class="font-serif text-4xl font-bold text-white mb-4 text-center">Temukan <span class="text-ember">Kami</span></h2>
+        <p class="text-parchment/70 mb-10 text-center">Kunjungi angkringan kami atau sapa kami di sosial media</p>
+        
+        <!-- Container Peta dengan Header -->
+        <div class="rounded-3xl overflow-hidden glass border border-wood shadow-2xl mb-10">
+            <!-- Header Peta -->
+            <div class="bg-darker/50 px-6 py-4 border-b border-wood flex items-center gap-3">
+                <i class="fa-solid fa-location-dot text-ember"></i>
+                <span class="font-bold text-white">Lokasi Angkringan Senthir</span>
+            </div>
+            <!-- Iframe Peta -->
+            <iframe src="//www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.9692772514386!2d107.07420767404567!3d-6.397960662573847!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69970029cadfcf%3A0x6a36b78167632ced!2sANGKRINGAN%20SENTHIR!5e0!3m2!1sid!2sid!4v1782798342884!5m2!1sid!2sid" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+
+        <!-- Social Media Links (Tambahkan link di href) -->
+        <div class="flex justify-center gap-6">
+            <!-- Isi href dengan link Instagram lu -->
+            <a href="https://www.instagram.com/angkringan_senthir?igsh=MWN1MzR0aGdyN2V1eA%3D%3D&utm_source=qr" target="_blank" class="group flex items-center gap-3 bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-500 p-[2px] rounded-full hover:scale-105 transition-transform shadow-lg">
+                <span class="bg-wood2 px-6 py-3 rounded-full flex items-center gap-2 text-white font-bold group-hover:bg-opacity-80 transition-all">
+                    <i class="fa-brands fa-instagram text-xl"></i> Instagram
+                </span>
+            </a>
+            <!-- Isi href dengan link TikTok lu -->
+            <a href="https://www.tiktok.com/@angkringan.senthir?_r=1&_t=ZS-972gylG6uoe" target="_blank" class="group flex items-center gap-3 bg-gradient-to-r from-[#00f2fe] to-[#4facfe] p-[2px] rounded-full hover:scale-105 transition-transform shadow-lg">
+                <span class="bg-wood2 px-6 py-3 rounded-full flex items-center gap-2 text-white font-bold group-hover:bg-opacity-80 transition-all">
+                    <i class="fa-brands fa-tiktok text-xl"></i> TikTok
+                </span>
+            </a>
+        </div>
+    </div>
+</section>
+        </div>
+        <!-- /homeView -->
+
+        <!-- TAMPILAN MENU -->
+        <div id="menuView" class="hidden pt-28 pb-24 bg-dark min-h-screen animate-fade-in-up">
+            <div class="container mx-auto px-6">
+                <div class="flex justify-between items-center mb-10 border-b border-wood pb-6">
+                    <div>
+                        <h2 class="font-serif text-4xl font-bold text-white mb-2">Daftar <span class="text-ember">Menu</span></h2>
+                        <p class="text-parchment/70">Pilih ragam varian khas Senthir.</p>
+                    </div>
+                </div>
+                <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-darker border-t border-wood pt-16 pb-28 md:pb-10">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
+                <div>
+                    <a href="#" onclick="switchView('home')" class="font-serif text-2xl font-bold text-ember flex items-center gap-2 mb-4">
+                        <svg class="wick-flame" width="18" height="24" viewBox="0 0 20 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path class="flame-core" d="M10 2C10 2 4 9 4 15C4 19.4 6.7 23 10 23C13.3 23 16 19.4 16 15C16 9 10 2 10 2Z" fill="#e8631c"/>
+                            <path class="flame-inner" d="M10 9C10 9 7.5 13 7.5 16.5C7.5 18.9 8.6 20.5 10 20.5C11.4 20.5 12.5 18.9 12.5 16.5C12.5 13 10 9 10 9Z" fill="#f4c430"/>
+                            <rect x="9.3" y="22.5" width="1.4" height="2.5" rx="0.5" fill="#3a2f24"/>
+                        </svg>
+                        Senthir
+                    </a>
+                    <p class="text-parchment/60 text-sm leading-relaxed">Kuliner malam premium dengan kehangatan angkringan tradisional. Disajikan dengan standar kebersihan dan rasa otentik.</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 text-sm tracking-wide uppercase">Kontak & Jam Buka</h4>
+                    <ul class="space-y-3 text-sm text-parchment/70">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot text-ember mt-1"></i>
+                            <span>Lihat lokasi lengkap di peta bagian "Temukan Kami"</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-clock text-ember"></i>
+                            <span>Setiap hari, 18:00 - 00:00 WIB</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-brands fa-whatsapp text-ember"></i>
+                            <a href="https://wa.me/6285880706634" target="_blank" class="hover:text-ember transition-colors">+62 858-8070-6634</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 text-sm tracking-wide uppercase">Ikuti Kami</h4>
+                    <div class="flex gap-3 mb-4">
+                        <a href="https://www.instagram.com/angkringan_senthir?igsh=MWN1MzR0aGdyN2V1eA%3D%3D&utm_source=qr" target="_blank" class="w-10 h-10 rounded-full bg-wood flex items-center justify-center hover:bg-ember hover:text-darker transition-colors text-parchment">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@angkringan.senthir?_r=1&_t=ZS-972gylG6uoe" target="_blank" class="w-10 h-10 rounded-full bg-wood flex items-center justify-center hover:bg-ember hover:text-darker transition-colors text-parchment">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                    </div>
+                    <button onclick="switchView('menu')" class="text-ember text-sm font-bold hover:underline">Pesan sekarang via web &rarr;</button>
+                </div>
+            </div>
+            <div class="divider-ember mb-6"></div>
+            <p class="text-center text-parchment/40 text-xs">&copy; 2026 Angkringan Senthir. Dibuat dengan kehangatan.</p>
+        </div>
+    </footer>
+
+    <!-- Bottom Navigation Mobile (Diperbarui Logikanya) -->
+    <nav class="md:hidden fixed bottom-4 left-4 right-4 glass rounded-full z-40 px-6 py-3 flex justify-between items-center shadow-lg border border-wood/50">
+        <!-- Tambahin ID dan perbaikin class active-nya -->
+        <button id="navHome" onclick="switchView('home')" class="nav-btn flex flex-col items-center text-ember transition-all duration-300 active:scale-90">
+            <i class="fa-solid fa-house text-xl mb-1"></i>
+            <span class="text-[10px] font-bold tracking-wide">Home</span>
+        </button>
+        <button id="navMenu" onclick="switchView('menu')" class="nav-btn flex flex-col items-center text-parchment/70 transition-all duration-300 active:scale-90">
+            <i class="fa-solid fa-utensils text-xl mb-1"></i>
+            <span class="text-[10px] font-bold tracking-wide">Menu</span>
+        </button>
+        <!-- Hapus text-ember permanen, ganti hover dan click effect -->
+        <button onclick="toggleCart()" class="relative flex flex-col items-center text-parchment/70 hover:text-ember transition-all duration-300 active:scale-90 active:text-ember">
+            <i class="fa-solid fa-basket-shopping text-xl mb-1"></i>
+            <span class="text-[10px] font-bold tracking-wide">Cart</span>
+            <span id="cartBadgeMob" class="absolute -top-2 -right-3 bg-red-600 text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center hidden border-2 border-[#0f0c09]">0</span>
+        </button>
+    </nav>
+
+    <!-- Lightbox Galeri -->
+    <div id="galleryLightbox" class="fixed inset-0 z-[70] bg-darker/95 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4">
+        <button onclick="closeGalleryLightbox()" class="absolute top-5 right-5 text-white bg-wood/60 hover:bg-ember w-10 h-10 rounded-full flex items-center justify-center transition-colors z-10">
+            <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+        <button onclick="changeGalleryImage(-1)" class="absolute left-3 md:left-8 text-white bg-wood/60 hover:bg-ember w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <img id="galleryLightboxImg" src="" alt="Galeri Senthir" class="max-w-full max-h-[80vh] rounded-2xl object-contain shadow-2xl">
+        <button onclick="changeGalleryImage(1)" class="absolute right-3 md:right-8 text-white bg-wood/60 hover:bg-ember w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <!-- Modal Varian -->
+    <!-- Ganti bagian div#variantModal lu dengan ini -->
+<div id="variantModal" class="fixed inset-0 z-[60] bg-dark/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4">
+    <div id="variantModalContent" class="bg-wood2 border border-wood w-full max-w-sm rounded-2xl p-6 transform scale-95 transition-transform duration-300">
+        <div class="flex justify-between items-center mb-6">
+            <h3 id="variantModalTitle" class="text-xl font-bold text-white">Pilih Varian</h3>
+            <button onclick="closeVariantModal()" class="text-parchment/70 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        <!-- Container ini WAJIB ada agar app.js bisa mengisi list varian -->
+        <div id="variantList" class="space-y-3"></div>
+    </div>
+</div>
+
+    <!-- Cart Modal Overlay (Desain form pemesanan diperbarui di app.js) -->
+    <div id="cartModal" class="fixed inset-0 z-50 bg-dark/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 flex justify-end">
+        <div id="cartSidebar" class="w-full md:w-[450px] h-full bg-wood2 border-l border-wood shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+            <div class="px-6 py-5 border-b border-wood flex justify-between items-center bg-darker">
+                <h3 class="font-serif text-2xl font-bold text-white"><i class="fa-solid fa-basket-shopping text-ember mr-2"></i> Pesanan Anda</h3>
+                <button onclick="toggleCart()" class="text-parchment/70 hover:text-white transition-colors bg-wood h-8 w-8 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 scrollbar-hide">
+                <div id="emptyCart" class="text-center text-parchment/60 mt-20">
+                    <div class="w-24 h-24 bg-wood rounded-full flex items-center justify-center mx-auto mb-4 border border-wood">
+                        <i class="fa-solid fa-ghost text-5xl opacity-50"></i>
+                    </div>
+                    <p class="font-medium text-lg text-parchment/70">Keranjang masih kosong.</p>
+                    <p class="text-sm mt-1">Yuk, pilih menu angkringan favoritmu!</p>
+                </div>
+                <div id="cartItemsList" class="space-y-3 mb-8"></div>
+                
+                <div id="orderFormArea" class="hidden space-y-6 form-slide-down">
+                    <h4 class="text-white font-bold border-b border-wood pb-2">Detail Pengiriman</h4>
+
+                    <div>
+                        <label for="customerName" class="block text-parchment/70 text-sm mb-2">Nama Penerima <span class="text-ember">*</span></label>
+                        <input type="text" id="customerName" placeholder="Tulis nama lengkap kamu" class="w-full bg-wood2 border border-wood rounded-lg p-3 text-sm text-white focus:outline-none focus:border-ember focus:ring-1 focus:ring-ember placeholder-parchment/60">
+                    </div>
+
+                    <div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="deliveryType" value="dine_in" class="peer hidden" checked onchange="handleDeliveryChange()">
+                                <div class="p-4 border border-wood bg-wood/50 rounded-xl text-center peer-checked:bg-ember/10 peer-checked:border-ember peer-checked:text-ember transition-all group-hover:border-parchment/60">
+                                    <i class="fa-solid fa-store text-xl mb-2"></i><br><span class="text-sm font-bold">Makan di Tempat</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="deliveryType" value="delivery" class="peer hidden" onchange="handleDeliveryChange()">
+                                <div class="p-4 border border-wood bg-wood/50 rounded-xl text-center peer-checked:bg-ember/10 peer-checked:border-ember peer-checked:text-ember transition-all group-hover:border-parchment/60">
+                                    <i class="fa-solid fa-motorcycle text-xl mb-2"></i><br><span class="text-sm font-bold">Pesan Antar</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="locationArea" class="hidden space-y-4 bg-wood p-5 rounded-xl border border-wood relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-ember"></div>
+                        <p class="text-parchment/70 text-xs">Lokasi kamu wajib dideteksi agar ongkir dan jarak pengantaran bisa dihitung.</p>
+                        <button type="button" id="btnCekLokasi" onclick="calculateShipping()" class="w-full bg-wood2 border border-wood hover:border-ember text-white text-sm py-3 rounded-lg transition-colors flex items-center justify-center gap-2 font-bold shadow-md">
+                            <i class="fa-solid fa-location-crosshairs text-ember"></i> Cek Lokasi Saya
+                        </button>
+                        <p id="geoStatus" class="text-xs text-parchment/70 text-center"></p>
+
+                        <div id="geoError" class="hidden bg-red-950/40 border border-red-500/40 rounded-lg p-4 space-y-3">
+                            <p class="text-red-300 text-xs leading-relaxed">
+                                <i class="fa-solid fa-triangle-exclamation mr-1"></i>
+                                Lokasi gagal terdeteksi. Pastikan GPS aktif dan izin lokasi untuk situs ini sudah diizinkan di pengaturan browser kamu, lalu coba lagi.
+                            </p>
+                            <button type="button" onclick="calculateShipping()" class="w-full bg-red-500/20 border border-red-500/50 text-red-200 text-sm py-2.5 rounded-lg font-bold hover:bg-red-500/30 transition-colors flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-rotate-right"></i> Coba Deteksi Lagi
+                            </button>
+                        </div>
+
+                        <div id="distanceRow" class="hidden justify-between items-center bg-wood2/50 p-3 rounded-lg border border-wood/50">
+                            <span class="text-parchment/70 text-sm">Jarak Lokasi:</span>
+                            <span id="distanceText" class="font-bold text-ember">0 km</span>
+                        </div>
+
+                        <div id="addressWrap" class="hidden">
+                            <textarea id="addressInput" rows="2" placeholder="Tulis detail alamat (Cth: Kost Warna Biru, depan Indomaret...)" class="w-full bg-wood2 border border-wood rounded-lg p-3 text-sm text-white focus:outline-none focus:border-ember focus:ring-1 focus:ring-ember resize-none placeholder-parchment/60"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payment & Total Area -->
+            <div class="p-6 border-t border-wood bg-darker">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-parchment/70 text-sm">Subtotal</span><span id="cartSubtotal" class="font-medium text-white">Rp 0</span>
+                </div>
+                <div id="shippingRow" class="flex justify-between items-center mb-3 hidden">
+                    <span class="text-parchment/70 text-sm">Ongkos Kirim</span><span id="cartShipping" class="font-medium text-white">Rp 0</span>
+                </div>
+                <hr class="border-wood my-4">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-lg font-bold text-white">Total Bayar</span><span id="cartTotal" class="text-2xl font-bold text-ember">Rp 0</span>
+                </div>
+                <button id="btnCheckout" onclick="processWhatsAppCheckout()" disabled class="w-full bg-ember text-dark font-bold py-4 rounded-xl hover:bg-emberHover transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg shadow-glow">
+                    <i class="fa-brands fa-whatsapp text-xl"></i> Pesan via WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
