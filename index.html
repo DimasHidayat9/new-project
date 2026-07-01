@@ -70,6 +70,11 @@
                         ember: '#C25A1A',
                         emberHover: '#A84A12',
                         flame: '#E07833',
+                        cream: '#FBF7F1',
+                        creamCard: '#F1E9DB',
+                        taupe: '#E3D6C2',
+                        ink: '#2E2620',
+                        stone: '#8C7F6E',
                     },
                     fontFamily: {
                         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
@@ -129,8 +134,8 @@
             <!-- Hero Section -->
             <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
                 <div class="absolute inset-0 z-0">
-                    <img src="bg.png" alt="Angkringan" class="w-full h-full object-cover opacity-25" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/85 to-dark/40"></div>
+                    <img src="bg.png" alt="Angkringan" class="w-full h-full object-cover opacity-45" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/70 to-dark/25"></div>
                     <div class="absolute inset-0" style="background: radial-gradient(ellipse 60% 50% at 50% 70%, rgba(232,99,28,0.18), transparent 70%);"></div>
                 </div>
                 <div class="container mx-auto px-6 relative z-10 text-center">
@@ -206,83 +211,150 @@
             </section>
 
             <!-- Keunggulan Section -->
-            <section class="py-24 bg-wood2/50">
+            <section id="keunggulanSection" class="py-14 md:py-24 bg-parchment overflow-hidden">
                 <div class="container mx-auto px-6">
-                    <div class="text-center mb-14">
-                        <h2 class="font-serif text-4xl font-bold text-white">Kenapa Pilih <span class="text-ember">Senthir</span></h2>
-                        <p class="text-parchment/70 mt-3">Bukan angkringan biasa, ini standar yang kami pegang tiap malam</p>
+                    <div class="text-center mb-8 md:mb-14">
+                        <span class="text-ember tracking-[0.2em] text-xs font-semibold uppercase mb-3 block">Standar Kami</span>
+                        <h2 class="font-serif text-2xl md:text-4xl font-bold text-darker">Kenapa Pilih <span class="text-ember">Senthir</span></h2>
+                        <p class="text-darker/60 mt-3 text-sm md:text-base">Bukan angkringan biasa, ini yang kami pegang tiap malam</p>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div class="bg-wood p-8 rounded-3xl border border-wood text-center">
-                            <div class="w-16 h-16 bg-ember/10 border border-ember/30 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                                <i class="fa-solid fa-leaf text-ember text-2xl"></i>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+
+                        <!-- Kartu 1 -->
+                        <div class="keunggulan-card opacity-0 translate-y-8 group relative bg-darker rounded-3xl p-8 overflow-hidden cursor-default transition-all duration-500 hover:-translate-y-2"
+                             style="transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s ease;">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-ember scale-y-0 origin-bottom group-hover:scale-y-100 transition-transform duration-500 rounded-r-full"></div>
+                            <div class="absolute -bottom-8 -right-8 w-32 h-32 bg-ember/5 rounded-full group-hover:bg-ember/10 transition-colors duration-500"></div>
+                            <div class="keunggulan-icon w-14 h-14 bg-ember/10 rounded-2xl flex items-center justify-center mb-6 transition-all duration-400 group-hover:bg-ember group-hover:scale-110 group-hover:rotate-3">
+                                <i class="fa-solid fa-leaf text-ember text-xl group-hover:text-darker transition-colors duration-300"></i>
                             </div>
-                            <h3 class="text-white font-bold text-lg mb-2">Bahan Segar Tiap Hari</h3>
-                            <p class="text-parchment/70 text-sm leading-relaxed">Belanja bahan baku setiap hari, tanpa stok menginap, supaya rasa selalu konsisten.</p>
+                            <div class="keunggulan-num font-serif text-5xl font-bold text-ember/20 leading-none mb-2 group-hover:text-ember/40 transition-colors duration-300">01</div>
+                            <h3 class="text-parchment font-bold text-lg mb-3 -mt-2">Bahan Segar Tiap Hari</h3>
+                            <p class="text-parchment/50 text-sm leading-relaxed group-hover:text-parchment/70 transition-colors duration-300">Belanja bahan baku setiap hari, tanpa stok menginap, supaya rasa selalu konsisten.</p>
                         </div>
-                        <div class="bg-wood p-8 rounded-3xl border border-wood text-center">
-                            <div class="w-16 h-16 bg-ember/10 border border-ember/30 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                                <i class="fa-solid fa-shield-heart text-ember text-2xl"></i>
+
+                        <!-- Kartu 2 — highlighted, sedikit lebih tinggi -->
+                        <div class="keunggulan-card opacity-0 translate-y-8 group relative bg-ember rounded-3xl p-8 overflow-hidden cursor-default md:-translate-y-4 transition-all duration-500 hover:md:-translate-y-6 hover:shadow-[0_32px_48px_rgba(28,20,16,0.35)]"
+                             style="transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s ease;">
+                            <div class="absolute -top-6 -right-6 w-28 h-28 bg-white/10 rounded-full"></div>
+                            <div class="absolute bottom-4 right-4 w-16 h-16 bg-white/5 rounded-full"></div>
+                            <div class="keunggulan-icon w-14 h-14 bg-darker/20 rounded-2xl flex items-center justify-center mb-6 transition-all duration-400 group-hover:bg-darker/30 group-hover:scale-110 group-hover:-rotate-3">
+                                <i class="fa-solid fa-shield-heart text-darker text-xl"></i>
                             </div>
-                            <h3 class="text-white font-bold text-lg mb-2">Higienis & Terjaga</h3>
-                            <p class="text-parchment/70 text-sm leading-relaxed">Proses masak dan kemasan mengikuti standar kebersihan, bukan sekadar gerobak pinggir jalan.</p>
-                        </div>
-                        <div class="bg-wood p-8 rounded-3xl border border-wood text-center">
-                            <div class="w-16 h-16 bg-ember/10 border border-ember/30 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                                <i class="fa-solid fa-motorcycle text-ember text-2xl"></i>
+                            <div class="font-serif text-5xl font-bold text-darker/20 leading-none mb-2">02</div>
+                            <h3 class="text-darker font-bold text-lg mb-3 -mt-2">Higienis & Terjaga</h3>
+                            <p class="text-darker/65 text-sm leading-relaxed group-hover:text-darker/80 transition-colors duration-300">Proses masak dan kemasan mengikuti standar kebersihan, bukan sekadar gerobak pinggir jalan.</p>
+                            <div class="mt-5 inline-flex items-center gap-2 bg-darker/10 text-darker text-xs font-bold px-3 py-1.5 rounded-full">
+                                <i class="fa-solid fa-star text-[10px]"></i> Paling Disukai
                             </div>
-                            <h3 class="text-white font-bold text-lg mb-2">Cepat Diantar</h3>
-                            <p class="text-parchment/70 text-sm leading-relaxed">Estimasi ongkir dan jarak dihitung otomatis sebelum kamu checkout, tidak ada kejutan harga.</p>
                         </div>
+
+                        <!-- Kartu 3 -->
+                        <div class="keunggulan-card opacity-0 translate-y-8 group relative bg-darker rounded-3xl p-8 overflow-hidden cursor-default transition-all duration-500 hover:-translate-y-2"
+                             style="transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s ease;">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-ember scale-y-0 origin-bottom group-hover:scale-y-100 transition-transform duration-500 rounded-r-full"></div>
+                            <div class="absolute -bottom-8 -right-8 w-32 h-32 bg-ember/5 rounded-full group-hover:bg-ember/10 transition-colors duration-500"></div>
+                            <div class="keunggulan-icon w-14 h-14 bg-ember/10 rounded-2xl flex items-center justify-center mb-6 transition-all duration-400 group-hover:bg-ember group-hover:scale-110 group-hover:rotate-3">
+                                <i class="fa-solid fa-motorcycle text-ember text-xl group-hover:text-darker transition-colors duration-300"></i>
+                            </div>
+                            <div class="font-serif text-5xl font-bold text-ember/20 leading-none mb-2 group-hover:text-ember/40 transition-colors duration-300">03</div>
+                            <h3 class="text-parchment font-bold text-lg mb-3 -mt-2">Cepat Diantar</h3>
+                            <p class="text-parchment/50 text-sm leading-relaxed group-hover:text-parchment/70 transition-colors duration-300">Estimasi ongkir dan jarak dihitung otomatis sebelum kamu checkout, tidak ada kejutan harga.</p>
+                        </div>
+
                     </div>
                 </div>
             </section>
 
             <!-- Review Section -->
-            <section class="py-24 bg-wood2/50">
-                <div class="container mx-auto px-6 text-center">
-                    <h2 class="font-serif text-4xl font-bold text-white mb-4">Kata <span class="text-ember">Mereka</span></h2>
-                    <p class="text-parchment/70 mb-12">Kisah hangat dari pelanggan setia Senthir</p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-                        <!-- Review 1 -->
-                        <div class="bg-wood p-8 rounded-3xl relative border border-wood">
-                            <div class="flex gap-1 text-flame mb-4 text-sm">
-                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0s"></i>
-                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.15s"></i>
-                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.3s"></i>
-                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.45s"></i>
-                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.6s"></i>
-                            </div>
-                            <span class="font-serif text-5xl text-ember/30 leading-none block mb-2">&ldquo;</span>
-                            <p class="text-parchment italic -mt-4">Nasi bakar cuminya juara! Varian lauknya lengkap banget dan pelayanannya bersih. Tempat nongkrong favorit tiap malem minggu.</p>
-                            <h4 class="text-white font-bold mt-6">— Budi S.</h4>
+            <section class="py-14 md:py-24 bg-darker relative overflow-hidden">
+                <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle at 20% 50%, #C25A1A 0%, transparent 50%), radial-gradient(circle at 80% 50%, #E07833 0%, transparent 50%);"></div>
+                <div class="container mx-auto px-6 relative z-10">
+                    <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-10 md:mb-14 gap-4">
+                        <div>
+                            <span class="text-ember tracking-[0.2em] text-xs font-semibold uppercase mb-3 block">Ulasan Pelanggan</span>
+                            <h2 class="font-serif text-2xl md:text-4xl font-bold text-parchment">Kata <span class="text-ember">Mereka</span></h2>
                         </div>
-                        <!-- Review 2 -->
-                        <div class="bg-wood p-8 rounded-3xl relative border border-ember/50 shadow-[0_0_15px_rgba(232,99,28,0.15)] transform md:-translate-y-4">
-                            <div class="flex gap-1 text-flame mb-4 text-sm">
-                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.1s"></i>
-                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.25s"></i>
-                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.4s"></i>
-                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.55s"></i>
-                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.7s"></i>
-                            </div>
-                            <span class="font-serif text-5xl text-ember/30 leading-none block mb-2">&ldquo;</span>
-                            <p class="text-parchment italic -mt-4">Gorengan mendoan pas ujan-ujan dipadukan wedang uwuh... rasanya kayak pelukan hangat. Rekomen banget!</p>
-                            <h4 class="text-white font-bold mt-6">— Rina M.</h4>
+                        <div class="flex items-center gap-3">
+                            <button id="reviewPrev" onclick="changeReview(-1)" class="w-10 h-10 rounded-full border border-wood text-parchment/60 hover:border-ember hover:text-ember transition-all flex items-center justify-center">
+                                <i class="fa-solid fa-chevron-left text-sm"></i>
+                            </button>
+                            <button id="reviewNext" onclick="changeReview(1)" class="w-10 h-10 rounded-full border border-wood text-parchment/60 hover:border-ember hover:text-ember transition-all flex items-center justify-center">
+                                <i class="fa-solid fa-chevron-right text-sm"></i>
+                            </button>
                         </div>
-                        <!-- Review 3 -->
-                        <div class="bg-wood p-8 rounded-3xl relative border border-wood">
-                            <div class="flex gap-1 text-flame mb-4 text-sm">
-                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.05s"></i>
-                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.2s"></i>
-                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.35s"></i>
-                                <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.5s"></i>
-                                <i class="fa-solid fa-star-half-stroke star-twinkle" style="animation-delay:0.65s"></i>
+                    </div>
+
+                    <!-- Slider wrapper -->
+                    <div class="relative overflow-hidden">
+                        <div id="reviewTrack" class="flex transition-transform duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]" style="will-change:transform;">
+
+                            <!-- Review 1 -->
+                            <div class="review-slide w-full md:w-1/3 flex-shrink-0 px-3">
+                                <div class="bg-wood2 border border-wood rounded-3xl p-7 h-full flex flex-col hover:border-ember/40 transition-colors duration-300 group">
+                                    <div class="flex gap-1 text-flame mb-5 text-xs">
+                                        <i class="fa-solid fa-star star-twinkle" style="animation-delay:0s"></i>
+                                        <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.15s"></i>
+                                        <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.3s"></i>
+                                        <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.45s"></i>
+                                        <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.6s"></i>
+                                    </div>
+                                    <span class="font-serif text-4xl md:text-5xl text-ember/25 leading-none block mb-1 group-hover:text-ember/40 transition-colors duration-300">&ldquo;</span>
+                                    <p class="text-parchment/80 italic -mt-3 leading-relaxed flex-1 text-sm md:text-base">Nasi bakar cuminya juara! Varian lauknya lengkap banget dan pelayanannya bersih. Tempat nongkrong favorit tiap malem minggu.</p>
+                                    <div class="mt-6 pt-5 border-t border-wood flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-full bg-ember/20 flex items-center justify-center text-ember font-bold text-sm">B</div>
+                                        <h4 class="text-parchment font-bold text-sm">Budi S.</h4>
+                                    </div>
+                                </div>
                             </div>
-                            <span class="font-serif text-5xl text-ember/30 leading-none block mb-2">&ldquo;</span>
-                            <p class="text-parchment italic -mt-4">Ongkirnya jujur dan murah buat jarak deket. Makanannya nyampe masih anget banget. Top deh buat adminnya yang fast respon!</p>
-                            <h4 class="text-white font-bold mt-6">— Dimas H.</h4>
+
+                            <!-- Review 2 — featured -->
+                            <div class="review-slide w-full md:w-1/3 flex-shrink-0 px-3">
+                                <div class="bg-ember rounded-3xl p-7 h-full flex flex-col relative overflow-hidden group">
+                                    <div class="absolute top-0 right-0 w-24 h-24 bg-darker/10 rounded-bl-[4rem]"></div>
+                                    <div class="flex gap-1 text-darker/70 mb-5 text-xs">
+                                        <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.1s"></i>
+                                        <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.25s"></i>
+                                        <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.4s"></i>
+                                        <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.55s"></i>
+                                        <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.7s"></i>
+                                    </div>
+                                    <span class="font-serif text-4xl md:text-5xl text-darker/20 leading-none block mb-1">&ldquo;</span>
+                                    <p class="text-darker/80 italic -mt-3 leading-relaxed flex-1 text-sm md:text-base">Gorengan mendoan pas ujan-ujan dipadukan wedang uwuh... rasanya kayak pelukan hangat. Rekomen banget!</p>
+                                    <div class="mt-6 pt-5 border-t border-darker/20 flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-full bg-darker/20 flex items-center justify-center text-darker font-bold text-sm">R</div>
+                                        <h4 class="text-darker font-bold text-sm">Rina M.</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Review 3 -->
+                            <div class="review-slide w-full md:w-1/3 flex-shrink-0 px-3">
+                                <div class="bg-wood2 border border-wood rounded-3xl p-7 h-full flex flex-col hover:border-ember/40 transition-colors duration-300 group">
+                                    <div class="flex gap-1 text-flame mb-5 text-xs">
+                                        <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.05s"></i>
+                                        <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.2s"></i>
+                                        <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.35s"></i>
+                                        <i class="fa-solid fa-star star-twinkle" style="animation-delay:0.5s"></i>
+                                        <i class="fa-solid fa-star-half-stroke star-twinkle" style="animation-delay:0.65s"></i>
+                                    </div>
+                                    <span class="font-serif text-4xl md:text-5xl text-ember/25 leading-none block mb-1 group-hover:text-ember/40 transition-colors duration-300">&ldquo;</span>
+                                    <p class="text-parchment/80 italic -mt-3 leading-relaxed flex-1 text-sm md:text-base">Ongkirnya jujur dan murah buat jarak deket. Makanannya nyampe masih anget banget. Top deh buat adminnya yang fast respon!</p>
+                                    <div class="mt-6 pt-5 border-t border-wood flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-full bg-ember/20 flex items-center justify-center text-ember font-bold text-sm">D</div>
+                                        <h4 class="text-parchment font-bold text-sm">Dimas H.</h4>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
+                    </div>
+
+                    <!-- Dot navigator -->
+                    <div class="flex justify-center gap-2 mt-8" id="reviewDots">
+                        <button onclick="goToReview(0)" class="review-dot w-6 h-1.5 rounded-full bg-ember transition-all duration-300"></button>
+                        <button onclick="goToReview(1)" class="review-dot w-1.5 h-1.5 rounded-full bg-wood transition-all duration-300 hover:bg-ember/50"></button>
+                        <button onclick="goToReview(2)" class="review-dot w-1.5 h-1.5 rounded-full bg-wood transition-all duration-300 hover:bg-ember/50"></button>
                     </div>
                 </div>
             </section>
@@ -435,6 +507,9 @@
             </div>
             <div class="divider-ember mb-6"></div>
             <p class="text-center text-parchment/40 text-xs">&copy; 2026 Angkringan Senthir. Dibuat dengan kehangatan.</p>
+            <p class="text-center text-parchment/30 text-[11px] mt-2">
+                Website dikembangkan oleh <a href="#" target="_blank" rel="noopener" class="text-ember/80 hover:text-ember hover:underline font-medium">Nama Kamu</a>
+            </p>
         </div>
     </footer>
 
@@ -473,11 +548,11 @@
 
     <!-- Modal Varian -->
     <!-- Ganti bagian div#variantModal lu dengan ini -->
-<div id="variantModal" class="fixed inset-0 z-[60] bg-dark/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4">
-    <div id="variantModalContent" class="bg-wood2 border border-wood w-full max-w-sm rounded-2xl p-6 transform scale-95 transition-transform duration-300">
+<div id="variantModal" class="fixed inset-0 z-[60] bg-ink/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4">
+    <div id="variantModalContent" class="bg-cream border border-taupe w-full max-w-sm rounded-2xl p-6 transform scale-95 transition-transform duration-300 shadow-2xl">
         <div class="flex justify-between items-center mb-6">
-            <h3 id="variantModalTitle" class="text-xl font-bold text-white">Pilih Varian</h3>
-            <button onclick="closeVariantModal()" class="text-parchment/70 hover:text-white">
+            <h3 id="variantModalTitle" class="text-xl font-bold text-ink">Pilih Varian</h3>
+            <button onclick="closeVariantModal()" class="text-stone hover:text-ink transition-colors">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
         </div>
@@ -487,88 +562,88 @@
 </div>
 
     <!-- Cart Modal Overlay (Desain form pemesanan diperbarui di app.js) -->
-    <div id="cartModal" class="fixed inset-0 z-50 bg-dark/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 flex justify-end">
-        <div id="cartSidebar" class="w-full md:w-[450px] h-full bg-wood2 border-l border-wood shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
-            <div class="px-6 py-5 border-b border-wood flex justify-between items-center bg-darker">
-                <h3 class="font-serif text-2xl font-bold text-white"><i class="fa-solid fa-basket-shopping text-ember mr-2"></i> Pesanan Anda</h3>
-                <button onclick="toggleCart()" class="text-parchment/70 hover:text-white transition-colors bg-wood h-8 w-8 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div id="cartModal" class="fixed inset-0 z-50 bg-ink/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 flex justify-end">
+        <div id="cartSidebar" class="w-full md:w-[450px] h-full bg-cream border-l border-taupe shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+            <div class="px-6 py-5 border-b border-taupe flex justify-between items-center bg-creamCard">
+                <h3 class="font-serif text-2xl font-bold text-ink"><i class="fa-solid fa-basket-shopping text-ember mr-2"></i> Pesanan Anda</h3>
+                <button onclick="toggleCart()" class="text-stone hover:text-ink transition-colors bg-cream border border-taupe h-8 w-8 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="flex-1 overflow-y-auto p-6 scrollbar-hide">
-                <div id="emptyCart" class="text-center text-parchment/60 mt-20">
-                    <div class="w-24 h-24 bg-wood rounded-full flex items-center justify-center mx-auto mb-4 border border-wood">
-                        <i class="fa-solid fa-ghost text-5xl opacity-50"></i>
+                <div id="emptyCart" class="text-center text-stone mt-20">
+                    <div class="w-24 h-24 bg-creamCard rounded-full flex items-center justify-center mx-auto mb-4 border border-taupe">
+                        <i class="fa-solid fa-ghost text-5xl opacity-40"></i>
                     </div>
-                    <p class="font-medium text-lg text-parchment/70">Keranjang masih kosong.</p>
+                    <p class="font-medium text-lg text-ink/70">Keranjang masih kosong.</p>
                     <p class="text-sm mt-1">Yuk, pilih menu angkringan favoritmu!</p>
                 </div>
                 <div id="cartItemsList" class="space-y-3 mb-8"></div>
                 
                 <div id="orderFormArea" class="hidden space-y-6 form-slide-down">
-                    <h4 class="text-white font-bold border-b border-wood pb-2">Detail Pengiriman</h4>
+                    <h4 class="text-ink font-bold border-b border-taupe pb-2">Detail Pengiriman</h4>
 
                     <div>
-                        <label for="customerName" class="block text-parchment/70 text-sm mb-2">Nama Penerima <span class="text-ember">*</span></label>
-                        <input type="text" id="customerName" placeholder="Tulis nama lengkap kamu" class="w-full bg-wood2 border border-wood rounded-lg p-3 text-sm text-white focus:outline-none focus:border-ember focus:ring-1 focus:ring-ember placeholder-parchment/60">
+                        <label for="customerName" class="block text-stone text-sm mb-2">Nama Penerima <span class="text-ember">*</span></label>
+                        <input type="text" id="customerName" placeholder="Tulis nama lengkap kamu" class="w-full bg-cream border border-taupe rounded-lg p-3 text-sm text-ink focus:outline-none focus:border-ember focus:ring-1 focus:ring-ember placeholder-stone/70">
                     </div>
 
                     <div>
                         <div class="grid grid-cols-2 gap-3">
                             <label class="cursor-pointer group">
                                 <input type="radio" name="deliveryType" value="dine_in" class="peer hidden" checked onchange="handleDeliveryChange()">
-                                <div class="p-4 border border-wood bg-wood/50 rounded-xl text-center peer-checked:bg-ember/10 peer-checked:border-ember peer-checked:text-ember transition-all group-hover:border-parchment/60">
+                                <div class="p-4 border border-taupe bg-creamCard/70 rounded-xl text-center text-ink peer-checked:bg-ember/10 peer-checked:border-ember peer-checked:text-ember transition-all group-hover:border-stone/60">
                                     <i class="fa-solid fa-store text-xl mb-2"></i><br><span class="text-sm font-bold">Makan di Tempat</span>
                                 </div>
                             </label>
                             <label class="cursor-pointer group">
                                 <input type="radio" name="deliveryType" value="delivery" class="peer hidden" onchange="handleDeliveryChange()">
-                                <div class="p-4 border border-wood bg-wood/50 rounded-xl text-center peer-checked:bg-ember/10 peer-checked:border-ember peer-checked:text-ember transition-all group-hover:border-parchment/60">
+                                <div class="p-4 border border-taupe bg-creamCard/70 rounded-xl text-center text-ink peer-checked:bg-ember/10 peer-checked:border-ember peer-checked:text-ember transition-all group-hover:border-stone/60">
                                     <i class="fa-solid fa-motorcycle text-xl mb-2"></i><br><span class="text-sm font-bold">Pesan Antar</span>
                                 </div>
                             </label>
                         </div>
                     </div>
 
-                    <div id="locationArea" class="hidden space-y-4 bg-wood p-5 rounded-xl border border-wood relative overflow-hidden">
+                    <div id="locationArea" class="hidden space-y-4 bg-creamCard p-5 rounded-xl border border-taupe relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-1 h-full bg-ember"></div>
-                        <p class="text-parchment/70 text-xs">Lokasi kamu wajib dideteksi agar ongkir dan jarak pengantaran bisa dihitung.</p>
-                        <button type="button" id="btnCekLokasi" onclick="calculateShipping()" class="w-full bg-wood2 border border-wood hover:border-ember text-white text-sm py-3 rounded-lg transition-colors flex items-center justify-center gap-2 font-bold shadow-md">
+                        <p class="text-stone text-xs">Lokasi kamu wajib dideteksi agar ongkir dan jarak pengantaran bisa dihitung.</p>
+                        <button type="button" id="btnCekLokasi" onclick="calculateShipping()" class="w-full bg-cream border border-taupe hover:border-ember text-ink text-sm py-3 rounded-lg transition-colors flex items-center justify-center gap-2 font-bold shadow-sm">
                             <i class="fa-solid fa-location-crosshairs text-ember"></i> Cek Lokasi Saya
                         </button>
-                        <p id="geoStatus" class="text-xs text-parchment/70 text-center"></p>
+                        <p id="geoStatus" class="text-xs text-stone text-center"></p>
 
-                        <div id="geoError" class="hidden bg-red-950/40 border border-red-500/40 rounded-lg p-4 space-y-3">
-                            <p class="text-red-300 text-xs leading-relaxed">
+                        <div id="geoError" class="hidden bg-red-50 border border-red-300 rounded-lg p-4 space-y-3">
+                            <p class="text-red-700 text-xs leading-relaxed">
                                 <i class="fa-solid fa-triangle-exclamation mr-1"></i>
                                 Lokasi gagal terdeteksi. Pastikan GPS aktif dan izin lokasi untuk situs ini sudah diizinkan di pengaturan browser kamu, lalu coba lagi.
                             </p>
-                            <button type="button" onclick="calculateShipping()" class="w-full bg-red-500/20 border border-red-500/50 text-red-200 text-sm py-2.5 rounded-lg font-bold hover:bg-red-500/30 transition-colors flex items-center justify-center gap-2">
+                            <button type="button" onclick="calculateShipping()" class="w-full bg-red-100 border border-red-300 text-red-700 text-sm py-2.5 rounded-lg font-bold hover:bg-red-200 transition-colors flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-rotate-right"></i> Coba Deteksi Lagi
                             </button>
                         </div>
 
-                        <div id="distanceRow" class="hidden justify-between items-center bg-wood2/50 p-3 rounded-lg border border-wood/50">
-                            <span class="text-parchment/70 text-sm">Jarak Lokasi:</span>
+                        <div id="distanceRow" class="hidden justify-between items-center bg-cream p-3 rounded-lg border border-taupe">
+                            <span class="text-stone text-sm">Jarak Lokasi:</span>
                             <span id="distanceText" class="font-bold text-ember">0 km</span>
                         </div>
 
                         <div id="addressWrap" class="hidden">
-                            <textarea id="addressInput" rows="2" placeholder="Tulis detail alamat (Cth: Kost Warna Biru, depan Indomaret...)" class="w-full bg-wood2 border border-wood rounded-lg p-3 text-sm text-white focus:outline-none focus:border-ember focus:ring-1 focus:ring-ember resize-none placeholder-parchment/60"></textarea>
+                            <textarea id="addressInput" rows="2" placeholder="Tulis detail alamat (Cth: Kost Warna Biru, depan Indomaret...)" class="w-full bg-cream border border-taupe rounded-lg p-3 text-sm text-ink focus:outline-none focus:border-ember focus:ring-1 focus:ring-ember resize-none placeholder-stone/70"></textarea>
                         </div>
                     </div>
                 </div>
             </div>
             
             <!-- Payment & Total Area -->
-            <div class="p-6 border-t border-wood bg-darker">
+            <div class="p-6 border-t border-taupe bg-creamCard">
                 <div class="flex justify-between items-center mb-3">
-                    <span class="text-parchment/70 text-sm">Subtotal</span><span id="cartSubtotal" class="font-medium text-white">Rp 0</span>
+                    <span class="text-stone text-sm">Subtotal</span><span id="cartSubtotal" class="font-medium text-ink">Rp 0</span>
                 </div>
                 <div id="shippingRow" class="flex justify-between items-center mb-3 hidden">
-                    <span class="text-parchment/70 text-sm">Ongkos Kirim</span><span id="cartShipping" class="font-medium text-white">Rp 0</span>
+                    <span class="text-stone text-sm">Ongkos Kirim</span><span id="cartShipping" class="font-medium text-ink">Rp 0</span>
                 </div>
-                <hr class="border-wood my-4">
+                <hr class="border-taupe my-4">
                 <div class="flex justify-between items-center mb-6">
-                    <span class="text-lg font-bold text-white">Total Bayar</span><span id="cartTotal" class="text-2xl font-bold text-ember">Rp 0</span>
+                    <span class="text-lg font-bold text-ink">Total Bayar</span><span id="cartTotal" class="text-2xl font-bold text-ember">Rp 0</span>
                 </div>
                 <button id="btnCheckout" onclick="processWhatsAppCheckout()" disabled class="w-full bg-ember text-dark font-bold py-4 rounded-xl hover:bg-emberHover transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg shadow-glow">
                     <i class="fa-brands fa-whatsapp text-xl"></i> Pesan via WhatsApp
