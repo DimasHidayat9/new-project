@@ -112,7 +112,7 @@ function renderFeaturedMenu() {
     bestCard.className = 'menu-card overflow-hidden group flex flex-col border-2 border-flame shadow-[0_0_15px_rgba(244,196,48,0.25)]';
     bestCard.innerHTML = `
         <div class="relative h-44 hover-zoom">
-            <img src="${bestSellerMenu.img}" class="w-full h-full object-cover">
+            <img src="${bestSellerMenu.img}" class="w-full h-full object-cover" loading="lazy">
             <div class="absolute top-2 left-2 bg-flame text-darker text-xs font-bold px-2 py-1 rounded flex items-center gap-1">
                 <i class="fa-solid fa-fire text-[10px]"></i> FAVORIT
             </div>
@@ -134,7 +134,7 @@ function renderFeaturedMenu() {
         card.className = 'menu-card overflow-hidden group flex flex-col';
         card.innerHTML = `
             <div class="relative h-44 hover-zoom">
-                <img src="${group.img}" class="w-full h-full object-cover">
+                <img src="${group.img}" class="w-full h-full object-cover" loading="lazy">
                 <div class="absolute inset-0 bg-gradient-to-t from-wood2 to-transparent opacity-80"></div>
                 <div class="absolute bottom-3 left-4 right-4">
                     <h3 class="font-serif text-lg font-bold text-white leading-tight">${group.groupName}</h3>
@@ -277,7 +277,7 @@ function renderMenuGroups() {
     bestCard.className = 'menu-card overflow-hidden group flex flex-col border-2 border-flame shadow-[0_0_15px_rgba(244,196,48,0.25)]';
     bestCard.innerHTML = `
         <div class="relative h-48">
-            <img src="${bestSellerMenu.img}" class="w-full h-full object-cover">
+            <img src="${bestSellerMenu.img}" class="w-full h-full object-cover" loading="lazy">
             <div class="absolute top-2 left-2 bg-flame text-darker text-xs font-bold px-2 py-1 rounded flex items-center gap-1">
                 <i class="fa-solid fa-fire text-[10px]"></i> FAVORIT PELANGGAN
             </div>
@@ -296,7 +296,7 @@ function renderMenuGroups() {
         card.className = 'menu-card overflow-hidden group flex flex-col';
         card.innerHTML = `
             <div class="relative h-48 hover-zoom">
-                <img src="${group.img}" class="w-full h-full object-cover">
+                <img src="${group.img}" class="w-full h-full object-cover" loading="lazy">
                 <div class="absolute inset-0 bg-gradient-to-t from-wood2 to-transparent opacity-80"></div>
                 <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
                     <h3 class="font-serif text-2xl font-bold text-white leading-tight">${group.groupName}</h3>
