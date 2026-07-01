@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(validateOperatingHours, 60000); 
     renderMenuGroups();
     renderFeaturedMenu();
+    initKeunggulanReveal();
+    initReviewSlider();
     initCounterAnimation();
 
     const nameInput = document.getElementById('customerName');
@@ -96,8 +98,8 @@ function renderFeaturedMenu() {
             </div>
         </div>
         <div class="p-5 flex-1 flex flex-col">
-            <h3 class="text-lg font-bold text-white leading-tight">${bestSellerMenu.name}</h3>
-            <p class="text-flame text-sm font-semibold mt-1 mb-4">Rp ${bestSellerMenu.price.toLocaleString('id-ID')}</p>
+            <h3 class="text-lg font-bold text-ink leading-tight">${bestSellerMenu.name}</h3>
+            <p class="text-ember text-sm font-semibold mt-1 mb-4">Rp ${bestSellerMenu.price.toLocaleString('id-ID')}</p>
             <button onclick="addVariantToCart('${bestSellerMenu.id}', 'bestSeller', this)" class="w-full bg-flame text-darker py-3 rounded-lg font-bold hover:brightness-110 transition-all mt-auto">Pesan Sekarang</button>
         </div>
     `;
@@ -119,8 +121,8 @@ function renderFeaturedMenu() {
                 </div>
             </div>
             <div class="p-5 flex-1 flex flex-col">
-                <p class="text-parchment/70 text-xs mb-4 line-clamp-2">${group.desc}</p>
-                <button onclick="openVariantModal('${group.id}')" class="w-full border border-ember text-ember hover:bg-ember hover:text-darker py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 mt-auto text-sm">
+                <p class="text-stone text-xs mb-4 line-clamp-2">${group.desc}</p>
+                <button onclick="openVariantModal('${group.id}')" class="w-full border border-ember text-ember hover:bg-ember hover:text-white py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 mt-auto text-sm">
                     <i class="fa-solid fa-list-ul"></i> Pilih Varian
                 </button>
             </div>
@@ -187,6 +189,66 @@ function initCounterAnimation() {
     if (section) observer.observe(section);
 }
 
+/* ── Keunggulan: reveal kartu saat scroll masuk viewport ── */
+function initKeunggulanReveal() {
+    const cards = document.querySelectorAll('.keunggulan-card');
+    if (!cards.length) return;
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => entry.target.classList.add('visible'), i * 120);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+    cards.forEach(c => observer.observe(c));
+}
+
+/* ── Review Slider ── */
+let reviewIndex = 0;
+let reviewTotal = 3;
+let reviewAuto;
+
+function updateReviewSlider() {
+    const track = document.getElementById('reviewTrack');
+    const dots  = document.querySelectorAll('.review-dot');
+    if (!track) return;
+    const slideWidth = window.innerWidth >= 768 ? 100 / 3 : 100;
+    track.style.transform = `translateX(-${reviewIndex * slideWidth}%)`;
+    dots.forEach((d, i) => {
+        d.style.width        = i === reviewIndex ? '1.5rem' : '0.375rem';
+        d.style.background   = i === reviewIndex ? '#C25A1A' : '#3D2C1E';
+    });
+}
+
+function changeReview(dir) {
+    reviewIndex = (reviewIndex + dir + reviewTotal) % reviewTotal;
+    updateReviewSlider();
+    resetReviewAuto();
+}
+
+function goToReview(idx) {
+    reviewIndex = idx;
+    updateReviewSlider();
+    resetReviewAuto();
+}
+
+function resetReviewAuto() {
+    clearInterval(reviewAuto);
+    reviewAuto = setInterval(() => changeReview(1), 4500);
+}
+
+function initReviewSlider() {
+    updateReviewSlider();
+    resetReviewAuto();
+    /* Pause saat hover */
+    const section = document.getElementById('reviewTrack');
+    if (section) {
+        section.closest('section').addEventListener('mouseenter', () => clearInterval(reviewAuto));
+        section.closest('section').addEventListener('mouseleave', resetReviewAuto);
+    }
+}
+
 function renderMenuGroups() {
     const grid = document.getElementById('menuGrid');
     grid.innerHTML = '';
@@ -201,9 +263,9 @@ function renderMenuGroups() {
             </div>
         </div>
         <div class="p-5 flex-1">
-            <h3 class="text-xl font-bold text-white">${bestSellerMenu.name}</h3>
-            <p class="text-flame text-sm font-semibold mb-2">Rp ${bestSellerMenu.price.toLocaleString('id-ID')}</p>
-            <p class="text-parchment/70 text-xs mb-3 italic">"${bestSellerMenu.desc}"</p>
+            <h3 class="text-xl font-bold text-ink">${bestSellerMenu.name}</h3>
+            <p class="text-ember text-sm font-semibold mb-2">Rp ${bestSellerMenu.price.toLocaleString('id-ID')}</p>
+            <p class="text-stone text-xs mb-3 italic">"${bestSellerMenu.desc}"</p>
             <button onclick="addVariantToCart('${bestSellerMenu.id}', 'bestSeller', this)" class="w-full bg-flame text-darker py-3 rounded-lg font-bold hover:brightness-110 transition-all mt-4">Pesan Sekarang</button>
         </div>
     `;
@@ -222,8 +284,8 @@ function renderMenuGroups() {
                 </div>
             </div>
             <div class="p-5 flex-1 flex flex-col justify-between">
-                <p class="text-parchment/70 text-sm mb-5">${group.desc}</p>
-                <button onclick="openVariantModal('${group.id}')" class="w-full border border-ember text-ember hover:bg-ember hover:text-darker py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2">
+                <p class="text-stone text-sm mb-5">${group.desc}</p>
+                <button onclick="openVariantModal('${group.id}')" class="w-full border border-ember text-ember hover:bg-ember hover:text-white py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2">
                     <i class="fa-solid fa-list-ul"></i> Pilih Varian
                 </button>
             </div>
@@ -243,12 +305,12 @@ function openVariantModal(groupId) {
 
     group.variants.forEach(variant => {
         list.innerHTML += `
-            <div class="flex justify-between items-center bg-wood/50 p-4 rounded-xl border border-wood/50 hover:border-ember/50 transition-colors">
+            <div class="flex justify-between items-center bg-creamCard p-4 rounded-xl border border-taupe hover:border-ember/50 transition-colors">
                 <div>
-                    <h4 class="text-white font-medium mb-1">${variant.name}</h4>
+                    <h4 class="text-ink font-medium mb-1">${variant.name}</h4>
                     <span class="text-ember text-sm font-semibold">Rp ${variant.price.toLocaleString('id-ID')}</span>
                 </div>
-                <button onclick="addVariantToCart('${variant.id}', '${groupId}', this)" class="bg-ember/10 text-ember hover:bg-ember hover:text-darker px-4 py-2 rounded-lg text-sm font-bold transition-all border border-ember/20">
+                <button onclick="addVariantToCart('${variant.id}', '${groupId}', this)" class="bg-ember/10 text-ember hover:bg-ember hover:text-white px-4 py-2 rounded-lg text-sm font-bold transition-all border border-ember/20">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </div>
@@ -360,16 +422,16 @@ function updateCartUI() {
         cart.forEach(item => {
             subtotal += item.price * item.qty;
             list.innerHTML += `
-                <div class="flex justify-between items-center bg-wood p-4 rounded-xl border border-wood shadow-sm relative overflow-hidden group">
-                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-wood group-hover:bg-ember transition-colors"></div>
+                <div class="flex justify-between items-center bg-creamCard p-4 rounded-xl border border-taupe shadow-sm relative overflow-hidden group">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-taupe group-hover:bg-ember transition-colors"></div>
                     <div class="flex-1 pl-2">
-                        <h4 class="text-white text-base font-bold mb-1">${item.name}</h4>
+                        <h4 class="text-ink text-base font-bold mb-1">${item.name}</h4>
                         <span class="text-ember font-semibold text-sm">Rp ${item.price.toLocaleString('id-ID')}</span>
                     </div>
-                    <div class="flex items-center gap-3 bg-wood2 rounded-lg p-1 border border-wood shadow-inner">
-                        <button onclick="updateCartQuantity('${item.id}', -1)" class="text-parchment/70 hover:text-white hover:bg-wood w-7 h-7 rounded flex items-center justify-center transition-colors"><i class="fa-solid fa-minus text-xs"></i></button>
-                        <span class="text-white text-sm font-bold w-4 text-center">${item.qty}</span>
-                        <button onclick="updateCartQuantity('${item.id}', 1)" class="text-ember bg-ember/10 hover:bg-ember hover:text-darker w-7 h-7 rounded flex items-center justify-center transition-colors"><i class="fa-solid fa-plus text-xs"></i></button>
+                    <div class="flex items-center gap-3 bg-cream rounded-lg p-1 border border-taupe shadow-inner">
+                        <button onclick="updateCartQuantity('${item.id}', -1)" class="text-stone hover:text-ink hover:bg-taupe w-7 h-7 rounded flex items-center justify-center transition-colors"><i class="fa-solid fa-minus text-xs"></i></button>
+                        <span class="text-ink text-sm font-bold w-4 text-center">${item.qty}</span>
+                        <button onclick="updateCartQuantity('${item.id}', 1)" class="text-ember bg-ember/10 hover:bg-ember hover:text-white w-7 h-7 rounded flex items-center justify-center transition-colors"><i class="fa-solid fa-plus text-xs"></i></button>
                     </div>
                 </div>
             `;
