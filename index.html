@@ -201,24 +201,31 @@
     <main>
         <!-- TAMPILAN BERANDA -->
         <div id="homeView" class="block animate-fade-in-up">
-            <!-- Hero Section -->
-            <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-                <div class="absolute inset-0 z-0">
-                    <img src="bg.png" alt="Angkringan" class="w-full h-full object-cover opacity-45" loading="eager" fetchpriority="high" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/70 to-dark/25"></div>
-                    <div class="absolute inset-0" style="background: radial-gradient(ellipse 60% 50% at 50% 70%, rgba(232,99,28,0.18), transparent 70%);"></div>
-                </div>
-                <div class="container mx-auto px-6 relative z-10 text-center">
-                    <span class="text-ember tracking-[0.2em] text-sm md:text-base font-semibold uppercase mb-4 block">Kuliner Malam Premium</span>
-                    <h1 class="font-serif text-5xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-2xl">
-                        Kenyamanan Rasa<br>di Bawah Cahaya <span class="text-ember italic">Senthir</span>
-                    </h1>
-                    <p class="text-parchment text-lg md:text-xl max-w-2xl mx-auto mb-10">Tempat terbaik melepas penat ditemani kopi hangat.</p>
-                    <button onclick="switchView('menu')" class="inline-block bg-ember text-dark px-8 py-4 rounded-full font-bold text-lg hover:bg-emberHover transition-all hover:scale-105 shadow-glow">
-                        Lihat Menu Kami
-                    </button>
-                </div>
-            </section>
+        <!-- Hero Section -->
+        <section class="relative min-h-[100dvh] flex items-center justify-center overflow-hidden pt-28 pb-16">
+            <div class="absolute inset-0 z-0">
+                <img src="bg.png" alt="Angkringan" class="w-full h-full object-cover opacity-45" loading="eager" fetchpriority="high" />
+                <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/70 to-dark/25"></div>
+                <div class="absolute inset-0" style="background: radial-gradient(ellipse 60% 50% at 50% 70%, rgba(232,99,28,0.18), transparent 70%);"></div>
+            </div>
+            <div class="container mx-auto px-6 relative z-10 text-center mt-6 md:mt-0">
+                <!-- Ukuran font di HP jadi text-xs, di tablet sm:text-sm, di laptop md:text-base -->
+                <span class="text-ember tracking-[0.2em] text-xs sm:text-sm md:text-base font-semibold uppercase mb-3 md:mb-4 block">Kuliner Malam Premium</span>
+        
+                <!-- Ukuran judul di HP dikecilin jadi text-4xl (biar nggak luber), di tablet 5xl, laptop 7xl -->
+                <h1 class="font-serif text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-4 md:mb-6 leading-tight md:leading-tight drop-shadow-2xl">
+                Kenyamanan Rasa<br>di Bawah Cahaya <span class="text-ember italic">Senthir</span>
+                </h1>
+        
+                <!-- Ukuran deskripsi di HP jadi text-base -->
+                <p class="text-parchment text-base md:text-xl max-w-2xl mx-auto mb-8 md:mb-10">Tempat terbaik melepas penat ditemani kopi hangat.</p>
+        
+                <!-- Tombol disesuaikan padding dan ukuran fontnya buat layar sentuh HP -->
+                <button onclick="switchView('menu')" class="inline-block bg-ember text-dark px-7 md:px-8 py-3.5 md:py-4 rounded-full font-bold text-base md:text-lg hover:bg-emberHover transition-all hover:scale-105 shadow-glow">
+                    Lihat Menu Kami
+                </button>
+            </div>
+        </section>
 
             <!-- Statistik Section -->
             <section class="py-14 bg-darker border-y border-wood">
