@@ -1,0 +1,32 @@
+{
+  "name": "Angkringan Senthir - Kuliner Malam Premium",
+  "short_name": "Senthir",
+  "description": "Pesan menu angkringan favoritmu: sate bakar, nasi bakar, gorengan, baceman, hingga wedang hangat. Makan di tempat atau diantar.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#2B1F16",
+  "theme_color": "#1C1410",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
