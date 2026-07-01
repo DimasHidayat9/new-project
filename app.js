@@ -226,29 +226,62 @@ function initKeunggulanReveal() {
 
 /* ── Review Slider ── */
 let reviewIndex = 0;
-let reviewTotal = 3;
 let reviewAuto;
+
+// Berikan fallback angka 5 jika DOM belum sepenuhnya siap saat inisialisasi awal
+const getReviewTotal = () => document.querySelectorAll('.review-slide').length || 5;
 
 function updateReviewSlider() {
     const track = document.getElementById('reviewTrack');
     const dots  = document.querySelectorAll('.review-dot');
     if (!track) return;
-    const slideWidth = window.innerWidth >= 768 ? 100 / 3 : 100;
+    
+    const total = getReviewTotal();
+    const visibleSlides = window.innerWidth >= 768 ? 3 : 1;
+    const slideWidth = 100 / visibleSlides;
+    const maxIndex = total - visibleSlides;
+
+    // Antisipasi batas index agar tidak bergeser ke area kosong di desktop
+    if (reviewIndex > maxIndex) reviewIndex = maxIndex;
+    if (reviewIndex < 0) reviewIndex = 0;
+
     track.style.transform = `translateX(-${reviewIndex * slideWidth}%)`;
+    
+    // Update indicator dots
     dots.forEach((d, i) => {
-        d.style.width        = i === reviewIndex ? '1.5rem' : '0.375rem';
-        d.style.background   = i === reviewIndex ? '#C25A1A' : '#3D2C1E';
+        // Pada desktop, jika user klik dot ke-4 atau ke-5, dot akan mengunci di slide terakhir yang valid
+        const isActive = i === reviewIndex || (visibleSlides === 3 && reviewIndex === maxIndex && i >= maxIndex);
+        d.style.width      = isActive ? '1.5rem' : '0.375rem';
+        d.style.background = isActive ? '#C25A1A' : '#3D2C1E';
     });
 }
 
 function changeReview(dir) {
-    reviewIndex = (reviewIndex + dir + reviewTotal) % reviewTotal;
+    const total = getReviewTotal();
+    const visibleSlides = window.innerWidth >= 768 ? 3 : 1;
+    const maxIndex = total - visibleSlides;
+
+    reviewIndex += dir;
+    
+    // Efek melingkar (looping) yang presisi sesuai sisa slide yang tersedia
+    if (reviewIndex > maxIndex) {
+        reviewIndex = 0;
+    } else if (reviewIndex < 0) {
+        reviewIndex = maxIndex;
+    }
+
     updateReviewSlider();
     resetReviewAuto();
 }
 
 function goToReview(idx) {
-    reviewIndex = idx;
+    const total = getReviewTotal();
+    const visibleSlides = window.innerWidth >= 768 ? 3 : 1;
+    const maxIndex = total - visibleSlides;
+    
+    // Jika klik melewati batas maksimal tampilan desktop, kunci di maxIndex
+    reviewIndex = idx > maxIndex ? maxIndex : idx;
+    
     updateReviewSlider();
     resetReviewAuto();
 }
@@ -261,6 +294,10 @@ function resetReviewAuto() {
 function initReviewSlider() {
     updateReviewSlider();
     resetReviewAuto();
+    
+    /* Jalankan ulang kalkulasi saat layar di-resize (ganti orientasi HP/Laptop) */
+    window.addEventListener('resize', updateReviewSlider);
+
     /* Pause saat hover */
     const section = document.getElementById('reviewTrack');
     if (section) {
