@@ -67,7 +67,7 @@ function switchView(view) {
 function validateOperatingHours() {
     const currentHour = new Date().getHours();
     // Buka 18:00 - 00:00 (sesuai teks di overlay)
-    const isClosed = (currentHour >= 0 && currentHour < 0);
+    const isClosed = currentHour < 0;
     const overlay = document.getElementById('closedOverlay');
     if (isClosed) {
         isShopOpen = false;
@@ -79,6 +79,26 @@ function validateOperatingHours() {
         overlay.classList.remove('flex');
         overlay.classList.add('hidden');
         document.body.style.overflow = '';
+    }
+
+    // Update badge status live di navbar
+    const badge = document.getElementById('shopStatusBadge');
+    const dot = document.getElementById('shopStatusDot');
+    const text = document.getElementById('shopStatusText');
+    if (badge && dot && text) {
+        if (isShopOpen) {
+            badge.classList.remove('bg-red-500/10', 'border-red-500/30', 'text-red-400');
+            badge.classList.add('bg-green-500/10', 'border-green-500/30', 'text-green-400');
+            dot.classList.remove('bg-red-400');
+            dot.classList.add('bg-green-400', 'animate-pulse');
+            text.textContent = 'Buka Sekarang';
+        } else {
+            badge.classList.remove('bg-green-500/10', 'border-green-500/30', 'text-green-400');
+            badge.classList.add('bg-red-500/10', 'border-red-500/30', 'text-red-400');
+            dot.classList.remove('bg-green-400', 'animate-pulse');
+            dot.classList.add('bg-red-400');
+            text.textContent = 'Tutup Sekarang';
+        }
     }
 }
 
