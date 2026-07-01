@@ -1,31 +1,20 @@
 /* style.css - Angkringan Senthir Custom Styles
-   Palet: arang kayu hangat + nyala api senthir (bukan dark-mode SaaS biasa) */
-
-/* 0. Responsive Base Font Scale
-   Desktop default 16px, mobile turun ke 15px agar semua teks proporsional
-   tanpa harus ubah tiap elemen satu-satu */
-html {
-    font-size: 15px;
-}
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
+   Palet: Kopi Tua — cokelat kopi dalam, aksen tembaga kemerahan
+   darker:#1C1410 | dark:#2B1F16 | wood:#3D2C1E | ember:#C25A1A | flame:#E07833 | parchment:#D9C4A0 */
 
 /* 1. Base Setup & Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
 }
 ::-webkit-scrollbar-track {
-    background: #0f0c09; /* darker */
+    background: #1C1410; /* darker */
 }
 ::-webkit-scrollbar-thumb {
-    background: #3a2f24; /* wood */
+    background: #3D2C1E; /* wood */
     border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #e8631c; /* ember */
+    background: #C25A1A; /* ember */
 }
 
 /* Utilitas untuk menyembunyikan scrollbar di modal keranjang */
@@ -39,25 +28,25 @@ html {
 
 /* 2. Glassmorphism & Shadows */
 .glass {
-    background: rgba(42, 34, 26, 0.45); /* wood2 transparan */
+    background: rgba(43, 31, 22, 0.45); /* wood2 transparan */
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-top: 1px solid rgba(232, 99, 28, 0.12);
+    border-top: 1px solid rgba(194, 90, 26, 0.12);
 }
 
 .glass-nav {
-    background: rgba(15, 12, 9, 0.88); /* darker/88 */
+    background: rgba(28, 20, 16, 0.88); /* darker/88 */
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
 }
 
 .shadow-glow {
-    box-shadow: 0 4px 24px -4px rgba(232, 99, 28, 0.28);
+    box-shadow: 0 4px 24px -4px rgba(194, 90, 26, 0.28);
     transition: box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .shadow-glow:hover {
-    box-shadow: 0 10px 32px -6px rgba(232, 99, 28, 0.45);
+    box-shadow: 0 10px 32px -6px rgba(194, 90, 26, 0.45);
 }
 
 /* 3. Image Hover Interactions */
@@ -74,7 +63,7 @@ html {
 /* Menu Card — sudut dipotong asimetris, terasa "ditempa" bukan kotak generik */
 .menu-card {
     background: linear-gradient(160deg, #271e15 0%, #221a12 100%);
-    border: 1px solid #3a2f24;
+    border: 1px solid #3D2C1E;
     border-radius: 1.75rem 1.75rem 0.5rem 1.75rem;
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
     position: relative;
@@ -84,14 +73,14 @@ html {
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(244, 196, 48, 0.5), transparent);
+    background: linear-gradient(90deg, transparent, rgba(224, 120, 51, 0.5), transparent);
     opacity: 0;
     transition: opacity 0.4s ease;
 }
 .menu-card:hover {
-    border-color: rgba(232, 99, 28, 0.5);
+    border-color: rgba(194, 90, 26, 0.5);
     transform: translateY(-6px);
-    box-shadow: 0 24px 32px -8px rgba(0, 0, 0, 0.55), 0 10px 14px -8px rgba(232, 99, 28, 0.16);
+    box-shadow: 0 24px 32px -8px rgba(0, 0, 0, 0.55), 0 10px 14px -8px rgba(194, 90, 26, 0.16);
 }
 .menu-card:hover::before {
     opacity: 1;
@@ -135,9 +124,9 @@ html {
 
 /* Pulsasi nyala untuk ikon penting (dipakai jarang/sengaja) */
 @keyframes pulseEmber {
-    0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(232, 99, 28, 0.7)); }
-    50% { transform: scale(1.08); filter: drop-shadow(0 0 12px rgba(232, 99, 28, 0.9)); }
-    100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(232, 99, 28, 0.7)); }
+    0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(194, 90, 26, 0.7)); }
+    50% { transform: scale(1.08); filter: drop-shadow(0 0 12px rgba(194, 90, 26, 0.9)); }
+    100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(194, 90, 26, 0.7)); }
 }
 .pulse-amber {
     animation: pulseEmber 2.2s infinite;
@@ -163,13 +152,13 @@ html {
 /* Garis bertekstur halus untuk pemisah bagian — kesan "kayu lapuk", bukan hairline digital */
 .divider-ember {
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(232, 99, 28, 0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(194, 90, 26, 0.4), transparent);
 }
 
 /* Twinkle bintang ulasan — halus, tidak mengganggu, beda fase tiap bintang */
 @keyframes starTwinkle {
     0%, 100% { opacity: 0.55; transform: scale(0.92); }
-    50% { opacity: 1; transform: scale(1.05); filter: drop-shadow(0 0 4px rgba(244, 196, 48, 0.5)); }
+    50% { opacity: 1; transform: scale(1.05); filter: drop-shadow(0 0 4px rgba(224, 120, 51, 0.5)); }
 }
 .star-twinkle {
     display: inline-block;
