@@ -2,15 +2,15 @@
  * app.js - Full Code Update
  */
 
-const bestSellerMenu = { id: "bs1", name: "Wedang Jahe Merah", price: 8000, desc: "Hangatnya jahe merah asli pilihan.", img: "wedang.jpg" };
+const bestSellerMenu = { id: "bs1", name: "Wedang Jahe Merah", price: 8000, desc: "Jahe merah asli, hangatkan badan, tenangkan hati.", img: "wedang.jpg" };
 const menuData = [
-    { id: "g1", groupName: "Aneka Sate Bakar", desc: "Sate khas angkringan dibakar dadakan.", img: "sate.jpeg", variants: [{ id: "v1", name: "Sate Usus", price: 3000 }, { id: "v2", name: "Sate Telur Puyuh", price: 3000 }, { id: "v3", name: "Sate Kikil", price: 3000 }, { id: "v4", name: "Sate Ati Ampela", price: 3000 },] },
-    { id: "g4", groupName: "Nasi Bakar", desc: "Nasi pulen gurih dibalut daun pisang.", img: "nasbak.jpeg", variants: [{ id: "v13", name: "Nasi Bakar Cumi", price: 8000 }, { id: "v14", name: "Nasi Bakar Tongkol", price: 8000 }, { id: "v15", name: "Nasi Bakar Ayam Suir", price: 8000 }] },
-    { id: "g5", groupName: "Aneka Gorengan", desc: "Pendamping setia angkringan.", img: "g.jpeg", variants: [{ id: "v16", name: "Mendoan", price: 2000 }, { id: "v17", name: "Bakwan", price: 2000 }] },
-    { id: "g6", groupName: "Aneka Baceman", desc: "Manis gurih bumbu bacem meresap sempurna.", img: "tahu.jpeg", variants: [{ id: "v18", name: "Tahu Bacem", price: 2000 }, { id: "v19", name: "Tempe Bacem", price: 2000 }] },
-    { id: "g7", groupName: "Menu Tambahan", desc: "Lauk ekstra bikin makan malam makin kalap.", img: "pala.jpeg", variants: [{ id: "v20", name: "Sayap Ayam", price: 6000 }, { id: "v21", name: "Kepala Ayam", price: 3000 }] },
-    { id: "g8", groupName: "Minuman Dingin", desc: "Cocok menemani disaat begadng.", img: "es.jpeg", variants: [{ id: "v22", name: "Es Nutrisari", price: 5000 }, { id: "v23", name: "Jeruk Peras", price: 5000}, { id: "v24", name: "GoodDay Freez", price: 7000} ]},
-    { id: "g9", groupName: "Ngopii BosQuee...", desc: "Cocok menemani disaat begadng.", img: "kopi.jpeg", variants: [{ id: "v25", name: "Kopi Hitam", price: 4000 }, { id: "v26", name: "Kopi Susu", price: 4000 }] }
+    { id: "g1", groupName: "Aneka Sate Bakar", desc: "Jagoan angkringan yang selalu jadi rebutan.", img: "sate.jpeg", variants: [{ id: "v1", name: "Sate Usus", price: 3000 }, { id: "v2", name: "Sate Telur Puyuh", price: 3000 }, { id: "v3", name: "Sate Kikil", price: 3000 }, { id: "v4", name: "Sate Ati Ampela", price: 3000 },] },
+    { id: "g4", groupName: "Nasi Bakar", desc: "Kejutan gurih nan pulen di balik balutan daun pisang.", img: "nasbak.jpeg", variants: [{ id: "v13", name: "Nasi Bakar Cumi", price: 8000 }, { id: "v14", name: "Nasi Bakar Tongkol", price: 8000 }, { id: "v15", name: "Nasi Bakar Ayam Suir", price: 8000 }] },
+    { id: "g5", groupName: "Aneka Gorengan", desc: "Gak bakal lengkap nongkrongmu tanpa renyahnya gorengan ini.", img: "g.jpeg", variants: [{ id: "v16", name: "Mendoan", price: 2000 }, { id: "v17", name: "Bakwan", price: 2000 }] },
+    { id: "g6", groupName: "Aneka Baceman", desc: "Resep klasik, legitnya bikin rindu suasana kampung halaman.", img: "tahu.jpeg", variants: [{ id: "v18", name: "Tahu Bacem", price: 2000 }, { id: "v19", name: "Tempe Bacem", price: 2000 }] },
+    { id: "g7", groupName: "Menu Tambahan", desc: "Tambah lauknya, dobel puasnya!", img: "pala.jpeg", variants: [{ id: "v20", name: "Sayap Ayam", price: 6000 }, { id: "v21", name: "Kepala Ayam", price: 3000 }] },
+    { id: "g8", groupName: "Minuman Dingin", desc: "Teman sejuk untuk obrolan hangat di angkringan.", img: "es.jpeg", variants: [{ id: "v22", name: "Es Nutrisari", price: 5000 }, { id: "v23", name: "Jeruk Peras", price: 5000}, { id: "v24", name: "GoodDay Freez", price: 7000} ]},
+    { id: "g9", groupName: "Ngopii BosQuee...", desc: "Satu cangkir, semangat langsung ngalir!", img: "kopi.jpeg", variants: [{ id: "v25", name: "Kopi Hitam", price: 4000 }, { id: "v26", name: "Kopi Susu", price: 4000 }] }
 ];
 
 const SHOP_LAT = -6.397954;
