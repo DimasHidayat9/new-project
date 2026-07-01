@@ -464,8 +464,8 @@
                         <button onclick="goToReview(0)" class="review-dot w-6 h-1.5 rounded-full bg-ember transition-all duration-300"></button>
                         <button onclick="goToReview(1)" class="review-dot w-1.5 h-1.5 rounded-full bg-wood transition-all duration-300 hover:bg-ember/50"></button>
                         <button onclick="goToReview(2)" class="review-dot w-1.5 h-1.5 rounded-full bg-wood transition-all duration-300 hover:bg-ember/50"></button>
+                        <button onclick="goToReview(3)" class="review-dot w-1.5 h-1.5 rounded-full bg-wood transition-all duration-300 hover:bg-ember/50"></button>
                         <button onclick="goToReview(4)" class="review-dot w-1.5 h-1.5 rounded-full bg-wood transition-all duration-300 hover:bg-ember/50"></button>
-                        <button onclick="goToReview(5)" class="review-dot w-1.5 h-1.5 rounded-full bg-wood transition-all duration-300 hover:bg-ember/50"></button>
                     </div>
                 </div>
             </section>
@@ -478,7 +478,7 @@
                         <h2 class="font-serif text-4xl font-bold text-white">Galeri <span class="text-ember">Senthir</span></h2>
                         <p class="text-parchment/70 mt-3 max-w-xl mx-auto">Cuplikan suasana hangat dan sajian khas yang menemani malam-malam kalian</p>
                     </div>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[160px] md:auto-rows-[180px]">
+                    <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[160px] md:auto-rows-[180px]">
                         <button onclick="openGalleryLightbox(0)" class="hover-zoom rounded-2xl overflow-hidden col-span-2 row-span-2 relative group">
                             <img src="4.png" alt="Suasana Angkringan Senthir" class="w-full h-full object-cover" loading="lazy">
                             <div class="absolute inset-0 bg-darker/0 group-hover:bg-darker/30 transition-colors flex items-center justify-center">
