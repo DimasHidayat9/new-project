@@ -62,8 +62,8 @@
 
 /* Menu Card — sudut dipotong asimetris, terasa "ditempa" bukan kotak generik */
 .menu-card {
-    background: linear-gradient(160deg, #271e15 0%, #221a12 100%);
-    border: 1px solid #3D2C1E;
+    background: linear-gradient(160deg, #F5EFE2 0%, #EEE5D4 100%);
+    border: 1px solid #E3D6C2;
     border-radius: 1.75rem 1.75rem 0.5rem 1.75rem;
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
     position: relative;
@@ -180,4 +180,27 @@ input:focus, textarea:focus {
 /* Transisi tampilan antar section dibuat lebih halus, bukan potongan kasar */
 #homeView, #menuView {
     transition: opacity 0.3s ease;
+}
+
+/* Keunggulan card — reveal dari bawah saat masuk viewport */
+.keunggulan-card {
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.keunggulan-card.visible {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+/* Kartu tengah keunggulan tetap sedikit terangkat di desktop */
+@media (min-width: 768px) {
+    .keunggulan-card.visible:nth-child(2) {
+        transform: translateY(-1rem) !important;
+    }
+}
+
+/* Review slider transition */
+#reviewTrack {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.review-dot {
+    transition: all 0.3s ease;
 }
