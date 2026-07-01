@@ -204,3 +204,14 @@ input:focus, textarea:focus {
 .review-dot {
     transition: all 0.3s ease;
 }
+
+/* FAQ Accordion — sembunyikan marker bawaan browser, pakai chevron custom */
+summary {
+    -webkit-tap-highlight-color: transparent;
+}
+summary::-webkit-details-marker {
+    display: none;
+}
+summary::marker {
+    content: "";
+}
