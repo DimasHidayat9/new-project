@@ -65,7 +65,7 @@ function switchView(view) {
 function validateOperatingHours() {
     const currentHour = new Date().getHours();
     // Buka 18:00 - 00:00 (sesuai teks di overlay)
-    const isClosed = (currentHour >= 0 && currentHour < 18);
+    const isClosed = (currentHour >= 0 && currentHour < 0);
     const overlay = document.getElementById('closedOverlay');
     if (isClosed) {
         isShopOpen = false;
