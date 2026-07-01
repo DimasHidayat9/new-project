@@ -13,6 +13,8 @@
     <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
     <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1C1410">
 
     <!-- Open Graph / Facebook & WhatsApp Preview -->
     <meta property="og:type" content="restaurant.menu">
@@ -202,7 +204,7 @@
             <!-- Hero Section -->
             <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
                 <div class="absolute inset-0 z-0">
-                    <img src="bg.png" alt="Angkringan" class="w-full h-full object-cover opacity-45" />
+                    <img src="bg.png" alt="Angkringan" class="w-full h-full object-cover opacity-45" loading="eager" fetchpriority="high" />
                     <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/70 to-dark/25"></div>
                     <div class="absolute inset-0" style="background: radial-gradient(ellipse 60% 50% at 50% 70%, rgba(232,99,28,0.18), transparent 70%);"></div>
                 </div>
@@ -271,7 +273,7 @@
             <section class="py-24 bg-dark">
                 <div class="container mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
                     <div class="w-full md:w-1/2 rounded-3xl overflow-hidden shadow-[0_0_40px_rgba(232,99,28,0.1)]">
-                        <img src="about.jpeg" alt="Sate Angkringan" class="w-full h-auto hover-zoom" />
+                        <img src="about.jpeg" alt="Sate Angkringan" class="w-full h-auto hover-zoom" loading="lazy" />
                     </div>
                     <div class="w-full md:w-1/2">
                         <h2 class="font-serif text-4xl font-bold text-white mb-6">Cerita di Balik <span class="text-ember">Senthir</span></h2>
@@ -437,43 +439,37 @@
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[160px] md:auto-rows-[180px]">
                         <button onclick="openGalleryLightbox(0)" class="hover-zoom rounded-2xl overflow-hidden col-span-2 row-span-2 relative group">
-                            <img src="about.jpeg" alt="Suasana Angkringan Senthir" class="w-full h-full object-cover">
+                            <img src="4.png" alt="Suasana Angkringan Senthir" class="w-full h-full object-cover" loading="lazy">
                             <div class="absolute inset-0 bg-darker/0 group-hover:bg-darker/30 transition-colors flex items-center justify-center">
                                 <i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 transition-opacity text-2xl"></i>
                             </div>
                         </button>
                         <button onclick="openGalleryLightbox(1)" class="hover-zoom rounded-2xl overflow-hidden relative group">
-                            <img src="sate.jpeg" alt="Sate Bakar Senthir" class="w-full h-full object-cover">
+                            <img src="1.png" alt="Suasana Angkringan Senthir" class="w-full h-full object-cover" loading="lazy">
                             <div class="absolute inset-0 bg-darker/0 group-hover:bg-darker/30 transition-colors flex items-center justify-center">
                                 <i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 transition-opacity text-2xl"></i>
                             </div>
                         </button>
                         <button onclick="openGalleryLightbox(2)" class="hover-zoom rounded-2xl overflow-hidden relative group">
-                            <img src="nasbak.jpeg" alt="Nasi Bakar Senthir" class="w-full h-full object-cover">
+                            <img src="2.png" alt="Suasana Angkringan Senthir" class="w-full h-full object-cover" loading="lazy">
                             <div class="absolute inset-0 bg-darker/0 group-hover:bg-darker/30 transition-colors flex items-center justify-center">
                                 <i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 transition-opacity text-2xl"></i>
                             </div>
                         </button>
                         <button onclick="openGalleryLightbox(3)" class="hover-zoom rounded-2xl overflow-hidden relative group">
-                            <img src="kopi.jpeg" alt="Kopi Senthir" class="w-full h-full object-cover">
+                            <img src="3.png" alt="Suasana Angkringan Senthir" class="w-full h-full object-cover" loading="lazy">
                             <div class="absolute inset-0 bg-darker/0 group-hover:bg-darker/30 transition-colors flex items-center justify-center">
                                 <i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 transition-opacity text-2xl"></i>
                             </div>
                         </button>
                         <button onclick="openGalleryLightbox(4)" class="hover-zoom rounded-2xl overflow-hidden relative group">
-                            <img src="g.jpeg" alt="Gorengan Senthir" class="w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-darker/0 group-hover:bg-darker/30 transition-colors flex items-center justify-center">
-                                <i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 transition-opacity text-2xl"></i>
-                            </div>
-                        </button>
-                        <button onclick="openGalleryLightbox(5)" class="hover-zoom rounded-2xl overflow-hidden relative group">
-                            <img src="es.jpeg" alt="Minuman Dingin Senthir" class="w-full h-full object-cover">
+                            <img src="about.jpeg" alt="Suasana Angkringan Senthir" class="w-full h-full object-cover" loading="lazy">
                             <div class="absolute inset-0 bg-darker/0 group-hover:bg-darker/30 transition-colors flex items-center justify-center">
                                 <i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 transition-opacity text-2xl"></i>
                             </div>
                         </button>
                     </div>
-                    <p class="text-parchment/40 text-xs text-center mt-6 italic">* Foto suasana asli menyusul — saat ini menampilkan cuplikan dari foto menu yang sudah tersedia.</p>
+                    <p class="text-parchment/40 text-xs text-center mt-6 italic">* Suasana malam hari, dengan menikmati hidangan khas di Angkringan Senthir.</p>
                 </div>
             </section>
 
@@ -649,7 +645,7 @@
             <div class="divider-ember mb-6"></div>
             <p class="text-center text-parchment/40 text-xs">&copy; 2026 Angkringan Senthir. Dibuat dengan kehangatan.</p>
             <p class="text-center text-parchment/30 text-[11px] mt-2">
-                Website dikembangkan oleh <a href="#" target="_blank" rel="noopener" class="text-ember/80 hover:text-ember hover:underline font-medium">Nama Kamu</a>
+                Website dikembangkan oleh <a href="dimas-hidayat.netlify.app" target="_blank" rel="noopener" class="text-ember/80 hover:text-ember hover:underline font-medium">Pengembang</a>
             </p>
         </div>
     </footer>
