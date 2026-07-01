@@ -151,14 +151,15 @@ function renderFeaturedMenu() {
     });
 }
 
-const galleryImages = ['about.jpeg', 'sate.jpeg', 'nasbak.jpeg', 'kopi.jpeg', 'g.jpeg', 'es.jpeg'];
+// Diambil langsung dari <img> di grid galeri, jadi selalu sinkron kalau foto diganti di HTML
+const getGalleryImages = () => Array.from(document.querySelectorAll('#galleryGrid img')).map(img => img.getAttribute('src'));
 let currentGalleryIndex = 0;
 
 function openGalleryLightbox(index) {
     currentGalleryIndex = index;
     const lightbox = document.getElementById('galleryLightbox');
     const img = document.getElementById('galleryLightboxImg');
-    img.src = galleryImages[currentGalleryIndex];
+    img.src = getGalleryImages()[currentGalleryIndex];
     lightbox.classList.remove('opacity-0', 'pointer-events-none');
     document.body.style.overflow = 'hidden';
 }
@@ -170,6 +171,7 @@ function closeGalleryLightbox() {
 }
 
 function changeGalleryImage(direction) {
+    const galleryImages = getGalleryImages();
     currentGalleryIndex = (currentGalleryIndex + direction + galleryImages.length) % galleryImages.length;
     document.getElementById('galleryLightboxImg').src = galleryImages[currentGalleryIndex];
 }
