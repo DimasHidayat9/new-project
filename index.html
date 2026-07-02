@@ -1147,21 +1147,19 @@
                 </div>
 
                 <h3 class="font-serif text-xl font-bold text-white mb-1.5 relative">Akses Dashboard Admin</h3>
-                <p class="text-parchment/50 text-sm mb-7 relative">Masukkan 4 digit PIN untuk melanjutkan.</p>
+                <p class="text-parchment/50 text-sm mb-7 relative">Masuk dengan akun admin untuk melanjutkan.</p>
 
-                <!-- Kotak input PIN -->
-                <div id="adminPinBoxes" class="flex items-center justify-center gap-3 mb-2 relative">
-                    <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" data-pin-index="0" class="pin-box w-14 h-14 text-center text-2xl font-bold text-white bg-darker/60 border border-wood rounded-xl focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/30 transition-colors">
-                    <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" data-pin-index="1" class="pin-box w-14 h-14 text-center text-2xl font-bold text-white bg-darker/60 border border-wood rounded-xl focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/30 transition-colors">
-                    <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" data-pin-index="2" class="pin-box w-14 h-14 text-center text-2xl font-bold text-white bg-darker/60 border border-wood rounded-xl focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/30 transition-colors">
-                    <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" data-pin-index="3" class="pin-box w-14 h-14 text-center text-2xl font-bold text-white bg-darker/60 border border-wood rounded-xl focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/30 transition-colors">
+                <!-- Form login admin -->
+                <div class="space-y-3 mb-2 relative text-left">
+                    <input type="email" id="adminEmailInput" autocomplete="username" placeholder="Email admin" class="w-full h-12 px-4 text-white bg-darker/60 border border-wood rounded-xl focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/30 transition-colors">
+                    <input type="password" id="adminPasswordInput" autocomplete="current-password" placeholder="Password" class="w-full h-12 px-4 text-white bg-darker/60 border border-wood rounded-xl focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/30 transition-colors">
                 </div>
 
-                <p id="adminPinError" class="text-red-400 text-xs font-semibold h-4 mb-5 opacity-0 transition-opacity duration-200 relative">
-                    <i class="fa-solid fa-circle-exclamation mr-1"></i>PIN salah, coba lagi.
+                <p id="adminPinError" class="text-red-400 text-xs font-semibold h-4 mt-2 mb-5 opacity-0 transition-opacity duration-200 relative">
+                    <i class="fa-solid fa-circle-exclamation mr-1"></i>Login gagal, coba lagi.
                 </p>
 
-                <button onclick="submitAdminPin()" class="relative w-full bg-ember text-darker font-bold py-3.5 rounded-xl hover:bg-emberHover transition-colors flex items-center justify-center gap-2">
+                <button id="adminLoginBtn" onclick="submitAdminLogin()" class="relative w-full bg-ember text-darker font-bold py-3.5 rounded-xl hover:bg-emberHover transition-colors flex items-center justify-center gap-2">
                     <i class="fa-solid fa-lock-open"></i> Masuk
                 </button>
             </div>
@@ -1171,6 +1169,7 @@
     <!-- Firebase SDK (compat) — dipakai app.js untuk sinkron stok real-time -->
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
