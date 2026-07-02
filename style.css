@@ -215,3 +215,16 @@ summary::-webkit-details-marker {
 summary::marker {
     content: "";
 }
+/* Modal Konfirmasi Order */
+#confirmModal { transition: opacity 0.3s ease; }
+#confirmModalContent {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#confirmItemList > div:last-child { border-bottom: none; }
+/* Floating WA Button */
+#floatingWA {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+#waBubble {
+    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
