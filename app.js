@@ -24,6 +24,128 @@ let isShopOpen = true;
 let locationDetected = false;
 
 /* ==========================================================
+   STOK MENU: Habis / Tersedia + Mode Admin
+   ========================================================== */
+const STOCK_STORAGE_KEY = 'senthirStockState';
+const ADMIN_SESSION_KEY = 'senthirAdminMode';
+const ADMIN_PIN = '1908'; // Ganti PIN ini sesuai kebutuhan kamu
+
+let stockState = {};   // { itemId: true } → true artinya item tsb HABIS
+let isAdminMode = false;
+
+function loadStockState() {
+    try {
+        const saved = localStorage.getItem(STOCK_STORAGE_KEY);
+        stockState = saved ? JSON.parse(saved) : {};
+    } catch (e) {
+        console.warn('Gagal membaca status stok:', e);
+        stockState = {};
+    }
+}
+
+function saveStockState() {
+    try {
+        localStorage.setItem(STOCK_STORAGE_KEY, JSON.stringify(stockState));
+    } catch (e) {
+        console.warn('Gagal menyimpan status stok:', e);
+    }
+}
+
+function isOutOfStock(itemId) {
+    return !!stockState[itemId];
+}
+
+function isGroupFullyOutOfStock(group) {
+    return group.variants.every(v => isOutOfStock(v.id));
+}
+
+// Dipanggil dari tombol admin di tiap item (hanya aktif saat isAdminMode true)
+function toggleItemStock(itemId, event) {
+    if (event) event.stopPropagation();
+    if (isOutOfStock(itemId)) {
+        delete stockState[itemId];
+    } else {
+        stockState[itemId] = true;
+    }
+    saveStockState();
+    refreshAllMenuRenders();
+}
+
+function loadAdminMode() {
+    isAdminMode = sessionStorage.getItem(ADMIN_SESSION_KEY) === '1';
+    updateAdminModeUI();
+}
+
+function updateAdminModeUI() {
+    const chip = document.getElementById('adminModeChip');
+    if (!chip) return;
+    if (isAdminMode) {
+        chip.classList.remove('hidden');
+        chip.classList.add('inline-flex');
+    } else {
+        chip.classList.add('hidden');
+        chip.classList.remove('inline-flex');
+    }
+}
+
+function promptAdminLogin() {
+    if (isAdminMode) {
+        if (confirm('Keluar dari mode Kelola Stok?')) {
+            isAdminMode = false;
+            sessionStorage.removeItem(ADMIN_SESSION_KEY);
+            updateAdminModeUI();
+            refreshAllMenuRenders();
+        }
+        return;
+    }
+    const pin = prompt('Masukkan PIN Admin untuk kelola stok:');
+    if (pin === null) return;
+    if (pin === ADMIN_PIN) {
+        isAdminMode = true;
+        sessionStorage.setItem(ADMIN_SESSION_KEY, '1');
+        updateAdminModeUI();
+        refreshAllMenuRenders();
+        alert('Mode Kelola Stok aktif ✅\nSekarang tiap menu punya tombol kecil untuk ditandai "Habis" / "Tersedia".');
+    } else {
+        alert('PIN salah.');
+    }
+}
+
+function refreshAllMenuRenders() {
+    renderFeaturedMenu();
+    renderMenuGroups();
+    // Kalau modal varian sedang terbuka, refresh juga isinya
+    const openGroupId = document.getElementById('variantModal')?.dataset.openGroupId;
+    if (openGroupId && !document.getElementById('variantModal').classList.contains('opacity-0')) {
+        openVariantModal(openGroupId, true);
+    }
+}
+
+// Overlay "HABIS" + tombol admin di atas gambar kartu (best seller / group)
+function renderStockOverlay(itemId) {
+    const outOfStock = isOutOfStock(itemId);
+    const adminChip = isAdminMode
+        ? `<button onclick="toggleItemStock('${itemId}', event)" class="absolute top-2 right-2 z-10 text-[10px] font-bold px-2.5 py-1.5 rounded-full shadow-lg ${outOfStock ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}">
+             <i class="fa-solid ${outOfStock ? 'fa-rotate-left' : 'fa-ban'} mr-1"></i>${outOfStock ? 'Tandai Tersedia' : 'Tandai Habis'}
+           </button>`
+        : '';
+    const habisRibbon = outOfStock
+        ? `<div class="absolute inset-0 bg-darker/70 flex items-center justify-center z-[5]">
+             <span class="bg-red-600 text-white text-xs font-bold px-4 py-1.5 rounded-full tracking-wide">HABIS</span>
+           </div>`
+        : '';
+    return adminChip + habisRibbon;
+}
+
+// Overlay "HABIS" untuk kartu grup varian, aktif hanya kalau SEMUA variannya habis
+function renderGroupStockOverlay(group) {
+    if (!isGroupFullyOutOfStock(group)) return '';
+    return `<div class="absolute inset-0 bg-darker/70 flex items-center justify-center z-[5]">
+                <span class="bg-red-600 text-white text-xs font-bold px-4 py-1.5 rounded-full tracking-wide">HABIS</span>
+            </div>`;
+}
+
+/* ==========================================================
    PWA: Service Worker Registration & Install Prompt
    ========================================================== */
 let deferredInstallPrompt = null;
@@ -148,6 +270,8 @@ document.addEventListener('DOMContentLoaded', () => {
     validateOperatingHours();
     setInterval(validateOperatingHours, 1000); 
     loadCartFromStorage();
+    loadStockState();
+    loadAdminMode();
     renderMenuGroups();
     renderFeaturedMenu();
     initKeunggulanReveal();
@@ -249,6 +373,7 @@ function renderFeaturedMenu() {
     wrap.innerHTML = '';
 
     // Kartu best seller (varian tunggal, langsung bisa pesan)
+    const bestOutOfStock = isOutOfStock(bestSellerMenu.id);
     const bestCard = document.createElement('div');
     bestCard.className = 'menu-card overflow-hidden group flex flex-col border-2 border-flame shadow-[0_0_15px_rgba(244,196,48,0.25)]';
     bestCard.innerHTML = `
@@ -257,11 +382,12 @@ function renderFeaturedMenu() {
             <div class="absolute top-2 left-2 bg-flame text-darker text-xs font-bold px-2 py-1 rounded flex items-center gap-1">
                 <i class="fa-solid fa-fire text-[10px]"></i> FAVORIT
             </div>
+            ${renderStockOverlay(bestSellerMenu.id)}
         </div>
         <div class="p-5 flex-1 flex flex-col">
             <h3 class="text-lg font-bold text-ink leading-tight">${bestSellerMenu.name}</h3>
             <p class="text-ember text-sm font-semibold mt-1 mb-4">Rp ${bestSellerMenu.price.toLocaleString('id-ID')}</p>
-            <button onclick="addVariantToCart('${bestSellerMenu.id}', 'bestSeller', this)" class="w-full bg-flame text-darker py-3 rounded-lg font-bold hover:brightness-110 transition-all mt-auto">Pesan Sekarang</button>
+            <button onclick="addVariantToCart('${bestSellerMenu.id}', 'bestSeller', this)" ${bestOutOfStock ? 'disabled' : ''} class="w-full bg-flame text-darker py-3 rounded-lg font-bold hover:brightness-110 transition-all mt-auto ${bestOutOfStock ? 'opacity-50 cursor-not-allowed hover:brightness-100' : ''}">${bestOutOfStock ? 'Stok Habis' : 'Pesan Sekarang'}</button>
         </div>
     `;
     wrap.appendChild(bestCard);
@@ -271,11 +397,13 @@ function renderFeaturedMenu() {
     featuredGroupIds.forEach(gid => {
         const group = menuData.find(g => g.id === gid);
         if (!group) return;
+        const fullyOut = isGroupFullyOutOfStock(group);
         const card = document.createElement('div');
         card.className = 'menu-card overflow-hidden group flex flex-col';
         card.innerHTML = `
             <div class="relative h-44 hover-zoom">
                 <img src="${group.img}" class="w-full h-full object-cover" loading="lazy">
+                ${renderGroupStockOverlay(group)}
             </div>
             <div class="p-5 flex-1 flex flex-col">
                 <div class="flex justify-between items-start gap-2 mb-1">
@@ -283,8 +411,8 @@ function renderFeaturedMenu() {
                     <span class="shrink-0 bg-ember/10 text-ember text-[10px] font-bold px-2 py-1 rounded border border-ember/30">${group.variants.length} Varian</span>
                 </div>
                 <p class="text-stone text-xs mb-4 line-clamp-2">${group.desc}</p>
-                <button onclick="openVariantModal('${group.id}')" class="w-full border border-ember text-ember hover:bg-ember hover:text-white py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 mt-auto text-sm">
-                    <i class="fa-solid fa-list-ul"></i> Pilih Varian
+                <button onclick="openVariantModal('${group.id}')" ${fullyOut && !isAdminMode ? 'disabled' : ''} class="w-full border border-ember text-ember hover:bg-ember hover:text-white py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 mt-auto text-sm ${fullyOut && !isAdminMode ? 'opacity-50 cursor-not-allowed hover:bg-transparent hover:text-ember' : ''}">
+                    <i class="fa-solid fa-list-ul"></i> ${fullyOut ? 'Stok Habis' : 'Pilih Varian'}
                 </button>
             </div>
         `;
@@ -499,6 +627,7 @@ function renderMenuGroups() {
     const grid = document.getElementById('menuGrid');
     grid.innerHTML = '';
 
+    const bestOutOfStock = isOutOfStock(bestSellerMenu.id);
     const bestCard = document.createElement('div');
     bestCard.className = 'menu-card overflow-hidden group flex flex-col border-2 border-flame shadow-[0_0_15px_rgba(244,196,48,0.25)]';
     bestCard.innerHTML = `
@@ -507,22 +636,25 @@ function renderMenuGroups() {
             <div class="absolute top-2 left-2 bg-flame text-darker text-xs font-bold px-2 py-1 rounded flex items-center gap-1">
                 <i class="fa-solid fa-fire text-[10px]"></i> FAVORIT PELANGGAN
             </div>
+            ${renderStockOverlay(bestSellerMenu.id)}
         </div>
         <div class="p-5 flex-1">
             <h3 class="text-xl font-bold text-ink">${bestSellerMenu.name}</h3>
             <p class="text-ember text-sm font-semibold mb-2">Rp ${bestSellerMenu.price.toLocaleString('id-ID')}</p>
             <p class="text-stone text-xs mb-3 italic">"${bestSellerMenu.desc}"</p>
-            <button onclick="addVariantToCart('${bestSellerMenu.id}', 'bestSeller', this)" class="w-full bg-flame text-darker py-3 rounded-lg font-bold hover:brightness-110 transition-all mt-4">Pesan Sekarang</button>
+            <button onclick="addVariantToCart('${bestSellerMenu.id}', 'bestSeller', this)" ${bestOutOfStock ? 'disabled' : ''} class="w-full bg-flame text-darker py-3 rounded-lg font-bold hover:brightness-110 transition-all mt-4 ${bestOutOfStock ? 'opacity-50 cursor-not-allowed hover:brightness-100' : ''}">${bestOutOfStock ? 'Stok Habis' : 'Pesan Sekarang'}</button>
         </div>
     `;
     grid.appendChild(bestCard);
 
     menuData.forEach(group => {
+        const fullyOut = isGroupFullyOutOfStock(group);
         const card = document.createElement('div');
         card.className = 'menu-card overflow-hidden group flex flex-col';
         card.innerHTML = `
             <div class="relative h-48 hover-zoom">
                 <img src="${group.img}" class="w-full h-full object-cover" loading="lazy">
+                ${renderGroupStockOverlay(group)}
             </div>
             <div class="p-5 flex-1 flex flex-col justify-between">
                 <div>
@@ -532,8 +664,8 @@ function renderMenuGroups() {
                     </div>
                     <p class="text-stone text-sm mb-5">${group.desc}</p>
                 </div>
-                <button onclick="openVariantModal('${group.id}')" class="w-full border border-ember text-ember hover:bg-ember hover:text-white py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-list-ul"></i> Pilih Varian
+                <button onclick="openVariantModal('${group.id}')" ${fullyOut && !isAdminMode ? 'disabled' : ''} class="w-full border border-ember text-ember hover:bg-ember hover:text-white py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 ${fullyOut && !isAdminMode ? 'opacity-50 cursor-not-allowed hover:bg-transparent hover:text-ember' : ''}">
+                    <i class="fa-solid fa-list-ul"></i> ${fullyOut ? 'Stok Habis' : 'Pilih Varian'}
                 </button>
             </div>
         `;
@@ -541,8 +673,23 @@ function renderMenuGroups() {
     });
 }
 
-function openVariantModal(groupId) {
-    if (!isShopOpen) return;
+function renderVariantStockControl(variantId, groupId) {
+    const outOfStock = isOutOfStock(variantId);
+    if (isAdminMode) {
+        return `<button onclick="toggleItemStock('${variantId}', event)" class="text-[10px] font-bold px-3 py-2 rounded-lg border whitespace-nowrap ${outOfStock ? 'bg-red-500/10 text-red-600 border-red-500/30' : 'bg-green-500/10 text-green-700 border-green-500/30'}">
+                    <i class="fa-solid ${outOfStock ? 'fa-rotate-left' : 'fa-ban'} mr-1"></i>${outOfStock ? 'Tandai Tersedia' : 'Tandai Habis'}
+                </button>`;
+    }
+    if (outOfStock) {
+        return `<span class="text-red-600 text-xs font-bold bg-red-500/10 border border-red-500/30 px-3 py-2 rounded-lg whitespace-nowrap">Habis</span>`;
+    }
+    return `<button onclick="addVariantToCart('${variantId}', '${groupId}', this)" class="bg-ember/10 text-ember hover:bg-ember hover:text-white px-4 py-2 rounded-lg text-sm font-bold transition-all border border-ember/20">
+                <i class="fa-solid fa-plus"></i>
+            </button>`;
+}
+
+function openVariantModal(groupId, isRefresh) {
+    if (!isShopOpen && !isAdminMode) return;
     const group = menuData.find(g => g.id === groupId);
     if (!group) return;
 
@@ -553,23 +700,24 @@ function openVariantModal(groupId) {
     // (Sebelumnya pakai innerHTML += di dalam loop → tiap iterasi
     // re-parse seluruh isi list dari awal, jadi lag terutama di HP.)
     list.innerHTML = group.variants.map(variant => `
-        <div class="flex justify-between items-center bg-creamCard p-4 rounded-xl border border-taupe hover:border-ember/50 transition-colors">
+        <div class="flex justify-between items-center bg-creamCard p-4 rounded-xl border border-taupe hover:border-ember/50 transition-colors ${isOutOfStock(variant.id) && !isAdminMode ? 'opacity-50' : ''}">
             <div>
                 <h4 class="text-ink font-medium mb-1">${variant.name}</h4>
                 <span class="text-ember text-sm font-semibold">Rp ${variant.price.toLocaleString('id-ID')}</span>
             </div>
-            <button onclick="addVariantToCart('${variant.id}', '${groupId}', this)" class="bg-ember/10 text-ember hover:bg-ember hover:text-white px-4 py-2 rounded-lg text-sm font-bold transition-all border border-ember/20">
-                <i class="fa-solid fa-plus"></i>
-            </button>
+            ${renderVariantStockControl(variant.id, groupId)}
         </div>
     `).join('');
 
     const modal = document.getElementById('variantModal');
     const content = document.getElementById('variantModalContent');
-    modal.classList.remove('opacity-0', 'pointer-events-none');
-    content.classList.remove('scale-95');
-    content.classList.add('scale-100');
-    document.body.style.overflow = 'hidden';
+    modal.dataset.openGroupId = groupId;
+    if (!isRefresh) {
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        content.classList.remove('scale-95');
+        content.classList.add('scale-100');
+        document.body.style.overflow = 'hidden';
+    }
 }
 
 function closeVariantModal() {
@@ -595,6 +743,7 @@ function showToast() {
 
 function addVariantToCart(variantId, groupId, btnElement) {
     if (!isShopOpen) return;
+    if (isOutOfStock(variantId)) return; // lapisan keamanan tambahan, harusnya tombol sudah tidak muncul kalau habis
     let itemToAdd;
     if (groupId === 'bestSeller') {
         itemToAdd = { ...bestSellerMenu, qty: 1 };
