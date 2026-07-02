@@ -177,19 +177,40 @@
     <header class="fixed w-full top-0 z-40 glass-nav transition-all duration-300 border-b border-wood">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <a href="#" onclick="switchView('home')" class="font-serif text-2xl font-bold text-ember flex items-center gap-2">
-                    <svg class="wick-flame" width="20" height="26" viewBox="0 0 20 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path class="flame-core" d="M10 2C10 2 4 9 4 15C4 19.4 6.7 23 10 23C13.3 23 16 19.4 16 15C16 9 10 2 10 2Z" fill="#e8631c"/>
-                        <path class="flame-inner" d="M10 9C10 9 7.5 13 7.5 16.5C7.5 18.9 8.6 20.5 10 20.5C11.4 20.5 12.5 18.9 12.5 16.5C12.5 13 10 9 10 9Z" fill="#f4c430"/>
-                        <rect x="9.3" y="22.5" width="1.4" height="2.5" rx="0.5" fill="#3a2f24"/>
-                    </svg>
-                    Senthir
-                </a>
+                <div class="relative">
+                    <button type="button" id="brandTrigger" onclick="toggleBrandMenu(event)" aria-haspopup="true" aria-expanded="false" class="group font-serif text-2xl font-bold text-ember flex items-center gap-2 focus:outline-none">
+                        <svg class="wick-flame" width="20" height="26" viewBox="0 0 20 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path class="flame-core" d="M10 2C10 2 4 9 4 15C4 19.4 6.7 23 10 23C13.3 23 16 19.4 16 15C16 9 10 2 10 2Z" fill="#e8631c"/>
+                            <path class="flame-inner" d="M10 9C10 9 7.5 13 7.5 16.5C7.5 18.9 8.6 20.5 10 20.5C11.4 20.5 12.5 18.9 12.5 16.5C12.5 13 10 9 10 9Z" fill="#f4c430"/>
+                            <rect x="9.3" y="22.5" width="1.4" height="2.5" rx="0.5" fill="#3a2f24"/>
+                        </svg>
+                        Senthir
+                        <i id="brandChevron" class="fa-solid fa-chevron-down text-[10px] text-parchment/40 group-hover:text-ember transition-transform duration-200 ml-0.5"></i>
+                    </button>
+
+                    <!-- Dropdown Nama Toko -->
+                    <div id="brandDropdown" class="hidden opacity-0 scale-95 absolute left-0 top-full mt-3 w-60 bg-wood border border-ember/20 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden z-50 origin-top-left transition-all duration-150">
+                        <div class="px-4 pt-3 pb-2">
+                            <p class="text-[10px] font-bold tracking-wider text-parchment/40 uppercase">Angkringan Senthir</p>
+                        </div>
+                        <button onclick="switchView('home'); closeBrandMenu();" class="w-full text-left px-4 py-3 text-sm font-medium text-parchment hover:bg-darker hover:text-ember transition-colors flex items-center gap-3">
+                            <i class="fa-solid fa-house w-4 text-center"></i> Ke Beranda
+                        </button>
+                        <button onclick="switchView('menu'); closeBrandMenu();" class="w-full text-left px-4 py-3 text-sm font-medium text-parchment hover:bg-darker hover:text-ember transition-colors flex items-center gap-3">
+                            <i class="fa-solid fa-utensils w-4 text-center"></i> Lihat Menu
+                        </button>
+                        <div class="divider-ember mx-4"></div>
+                        <button onclick="handleAdminMenuClick()" class="w-full text-left px-4 py-3 text-sm font-semibold text-ember hover:bg-darker transition-colors flex items-center gap-3">
+                            <i class="fa-solid fa-user-shield w-4 text-center"></i>
+                            <span id="brandAdminLabel">Panel Admin</span>
+                        </button>
+                    </div>
+                </div>
                 <span id="shopStatusBadge" class="inline-flex items-center gap-1.5 text-[11px] md:text-xs font-semibold px-2.5 md:px-3 py-1 md:py-1.5 rounded-full border transition-colors">
                     <span id="shopStatusDot" class="w-1.5 h-1.5 rounded-full"></span>
                     <span id="shopStatusText">Mengecek jam buka...</span>
                 </span>
-                <button id="adminModeChip" onclick="promptAdminLogin()" class="hidden items-center gap-1.5 text-[10px] md:text-[11px] font-bold px-2.5 py-1 rounded-full bg-flame text-darker pulse-amber">
+                <button id="adminModeChip" onclick="switchView('admin')" class="hidden items-center gap-1.5 text-[10px] md:text-[11px] font-bold px-2.5 py-1 rounded-full bg-flame text-darker pulse-amber">
                     <i class="fa-solid fa-screwdriver-wrench"></i> ADMIN
                 </button>
             </div>
@@ -659,6 +680,88 @@
                 <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
             </div>
         </div>
+        <!-- /menuView -->
+
+        <!-- TAMPILAN ADMIN DASHBOARD -->
+        <div id="adminView" class="hidden min-h-screen bg-darker animate-fade-in-up">
+            <!-- Topbar Admin -->
+            <div class="border-b border-wood bg-dark/60">
+                <div class="container mx-auto px-6 pt-24 pb-6">
+                    <div class="flex flex-wrap justify-between items-end gap-4">
+                        <div>
+                            <p class="text-ember text-xs font-bold tracking-[0.2em] uppercase mb-1.5 flex items-center gap-2">
+                                <i class="fa-solid fa-user-shield"></i> Panel Admin
+                            </p>
+                            <h1 class="font-serif text-3xl md:text-4xl font-bold text-white">Dashboard Kelola Stok</h1>
+                            <p class="text-parchment/50 text-sm mt-1.5 mb-2">Tandai menu yang habis atau tersedia secara real-time.</p>
+                            <span id="adminSyncStatus" class="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full border border-wood bg-wood/30 text-parchment/60">
+                                <span class="sync-dot w-1.5 h-1.5 rounded-full bg-parchment/40"></span>
+                                <span class="sync-label">Menghubungkan...</span>
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <button onclick="switchView('home')" class="px-4 py-2.5 rounded-xl border border-wood text-parchment/80 text-sm font-semibold hover:border-ember/50 hover:text-ember transition-colors flex items-center gap-2">
+                                <i class="fa-solid fa-arrow-left"></i> <span class="hidden sm:inline">Kembali ke Toko</span>
+                            </button>
+                            <button onclick="adminLogout()" class="px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-semibold hover:bg-red-500/20 transition-colors flex items-center gap-2">
+                                <i class="fa-solid fa-right-from-bracket"></i> <span class="hidden sm:inline">Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container mx-auto px-6 py-10">
+                <!-- Stat Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+                    <div class="bg-wood/40 border border-wood rounded-2xl p-5">
+                        <div class="w-9 h-9 rounded-lg bg-ember/15 text-ember flex items-center justify-center mb-3">
+                            <i class="fa-solid fa-bowl-food text-sm"></i>
+                        </div>
+                        <p id="adminStatTotal" class="text-2xl font-bold text-white">0</p>
+                        <p class="text-parchment/50 text-xs mt-0.5">Total Item Menu</p>
+                    </div>
+                    <div class="bg-wood/40 border border-wood rounded-2xl p-5">
+                        <div class="w-9 h-9 rounded-lg bg-green-500/15 text-green-400 flex items-center justify-center mb-3">
+                            <i class="fa-solid fa-circle-check text-sm"></i>
+                        </div>
+                        <p id="adminStatTersedia" class="text-2xl font-bold text-white">0</p>
+                        <p class="text-parchment/50 text-xs mt-0.5">Tersedia</p>
+                    </div>
+                    <div class="bg-wood/40 border border-wood rounded-2xl p-5">
+                        <div class="w-9 h-9 rounded-lg bg-red-500/15 text-red-400 flex items-center justify-center mb-3">
+                            <i class="fa-solid fa-ban text-sm"></i>
+                        </div>
+                        <p id="adminStatHabis" class="text-2xl font-bold text-white">0</p>
+                        <p class="text-parchment/50 text-xs mt-0.5">Stok Habis</p>
+                    </div>
+                    <div class="bg-wood/40 border border-wood rounded-2xl p-5">
+                        <div class="w-9 h-9 rounded-lg bg-flame/15 text-flame flex items-center justify-center mb-3">
+                            <i class="fa-solid fa-layer-group text-sm"></i>
+                        </div>
+                        <p id="adminStatGroup" class="text-2xl font-bold text-white">0</p>
+                        <p class="text-parchment/50 text-xs mt-0.5">Kategori Menu</p>
+                    </div>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="flex flex-wrap justify-between items-center gap-3 mb-5">
+                    <div class="relative w-full sm:w-80">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-parchment/40 text-sm"></i>
+                        <input id="adminSearchInput" oninput="renderAdminDashboard()" type="text" placeholder="Cari nama menu..." class="w-full bg-wood/40 border border-wood rounded-xl pl-11 pr-4 py-2.5 text-sm text-parchment placeholder-parchment/30 focus:outline-none focus:border-ember/50">
+                    </div>
+                    <div class="flex items-center gap-2 text-xs">
+                        <button onclick="setAdminFilter('all')" id="adminFilterAll" class="admin-filter-btn px-3.5 py-2 rounded-lg font-semibold border border-ember bg-ember text-darker transition-colors">Semua</button>
+                        <button onclick="setAdminFilter('tersedia')" id="adminFilterTersedia" class="admin-filter-btn px-3.5 py-2 rounded-lg font-semibold border border-wood text-parchment/70 hover:border-ember/50 transition-colors">Tersedia</button>
+                        <button onclick="setAdminFilter('habis')" id="adminFilterHabis" class="admin-filter-btn px-3.5 py-2 rounded-lg font-semibold border border-wood text-parchment/70 hover:border-ember/50 transition-colors">Habis</button>
+                    </div>
+                </div>
+
+                <!-- List Menu per Kategori -->
+                <div id="adminItemsList" class="space-y-6"></div>
+            </div>
+        </div>
+        <!-- /adminView -->
     </main>
 
     <!-- Footer -->
@@ -712,7 +815,7 @@
                 Website dikembangkan oleh <a href="https://dimas-hidayat.netlify.app" target="_blank" rel="noopener" class="text-ember/80 hover:text-ember hover:underline font-medium">Pengembang</a>
             </p>
             <p class="text-center mt-3">
-                <button id="adminModeBtn" onclick="promptAdminLogin()" class="text-parchment/25 hover:text-ember/70 text-[10px] transition-colors">
+                <button id="adminModeBtn" onclick="handleAdminMenuClick()" class="text-parchment/25 hover:text-ember/70 text-[10px] transition-colors">
                     <i class="fa-solid fa-lock text-[9px] mr-1"></i>Kelola Stok
                 </button>
             </p>
@@ -1027,6 +1130,47 @@
         </button>
     </div>
 
+    <!-- Modal PIN Admin -->
+    <div id="adminPinModal" class="fixed inset-0 z-[90] bg-darker/85 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4">
+        <div id="adminPinModalContent" class="w-full max-w-sm bg-wood border border-ember/20 rounded-3xl shadow-2xl shadow-black/50 overflow-hidden transform scale-95 transition-all duration-300 relative">
+
+            <button onclick="closeAdminPinModal()" aria-label="Tutup" class="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center text-parchment/40 hover:text-parchment hover:bg-darker/60 transition-colors z-10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="px-8 pt-9 pb-8 text-center relative overflow-hidden">
+                <div class="absolute -top-10 -left-10 w-32 h-32 bg-ember/10 rounded-full"></div>
+                <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-ember/10 rounded-full"></div>
+
+                <div class="relative w-16 h-16 mx-auto mb-5 rounded-2xl bg-ember/15 border border-ember/30 flex items-center justify-center">
+                    <i class="fa-solid fa-user-shield text-ember text-2xl"></i>
+                </div>
+
+                <h3 class="font-serif text-xl font-bold text-white mb-1.5 relative">Akses Dashboard Admin</h3>
+                <p class="text-parchment/50 text-sm mb-7 relative">Masukkan 4 digit PIN untuk melanjutkan.</p>
+
+                <!-- Kotak input PIN -->
+                <div id="adminPinBoxes" class="flex items-center justify-center gap-3 mb-2 relative">
+                    <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" data-pin-index="0" class="pin-box w-14 h-14 text-center text-2xl font-bold text-white bg-darker/60 border border-wood rounded-xl focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/30 transition-colors">
+                    <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" data-pin-index="1" class="pin-box w-14 h-14 text-center text-2xl font-bold text-white bg-darker/60 border border-wood rounded-xl focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/30 transition-colors">
+                    <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" data-pin-index="2" class="pin-box w-14 h-14 text-center text-2xl font-bold text-white bg-darker/60 border border-wood rounded-xl focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/30 transition-colors">
+                    <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" data-pin-index="3" class="pin-box w-14 h-14 text-center text-2xl font-bold text-white bg-darker/60 border border-wood rounded-xl focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/30 transition-colors">
+                </div>
+
+                <p id="adminPinError" class="text-red-400 text-xs font-semibold h-4 mb-5 opacity-0 transition-opacity duration-200 relative">
+                    <i class="fa-solid fa-circle-exclamation mr-1"></i>PIN salah, coba lagi.
+                </p>
+
+                <button onclick="submitAdminPin()" class="relative w-full bg-ember text-darker font-bold py-3.5 rounded-xl hover:bg-emberHover transition-colors flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-lock-open"></i> Masuk
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (compat) — dipakai app.js untuk sinkron stok real-time -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
