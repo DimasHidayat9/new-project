@@ -165,16 +165,36 @@
     animation: starTwinkle 2.4s ease-in-out infinite;
 }
 
-/* Micro-interactions — sentuhan halus yang membedakan dari template generik */
+/* Micro-interactions — sentuhan halus yang membedakan dari template generik.
+   transform & opacity dipisah dari properti "berat" (box-shadow, background-color)
+   supaya animasi tap di HP tetap smooth (transform/opacity bisa di-GPU, sisanya tidak). */
 button, a {
-    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 button:active {
     transform: scale(0.97);
 }
 
+/* Elemen yang memang butuh transisi warna/border tetap didefinisikan eksplisit
+   di sini (bukan blanket rule ke semua button/a) supaya lebih murah untuk browser. */
+.menu-card button,
+.hover-zoom,
+#variantList > div,
+#cartItemsList button,
+nav button {
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
 input:focus, textarea:focus {
     transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Modal varian & cart — pakai will-change supaya browser siapkan layer GPU
+   terpisah dari awal, bukan mendadak saat animasi jalan (mencegah jank pertama buka). */
+#variantModal, #variantModalContent,
+#cartModal, #cartSidebar,
+#historyModal, #historySidebar {
+    will-change: transform, opacity;
 }
 
 /* Transisi tampilan antar section dibuat lebih halus, bukan potongan kasar */
