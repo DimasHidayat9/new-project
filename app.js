@@ -308,6 +308,52 @@ function initReviewSlider() {
     }
 }
 
+/* ── Floating WA Button ── */
+let waBubbleOpen = false;
+let waHideTimeout;
+
+function toggleWABubble() {
+    waBubbleOpen = !waBubbleOpen;
+    const bubble = document.getElementById('waBubble');
+    const icon   = document.getElementById('waFloatIcon');
+
+    if (waBubbleOpen) {
+        bubble.classList.remove('opacity-0', 'translate-y-2', 'pointer-events-none');
+        icon.className = 'fa-solid fa-xmark text-xl transition-all duration-300';
+        // Auto-tutup setelah 6 detik jika tidak diklik
+        clearTimeout(waHideTimeout);
+        waHideTimeout = setTimeout(() => closeWABubble(), 6000);
+    } else {
+        closeWABubble();
+    }
+}
+
+function closeWABubble() {
+    waBubbleOpen = false;
+    const bubble = document.getElementById('waBubble');
+    const icon   = document.getElementById('waFloatIcon');
+    bubble.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
+    icon.className = 'fa-brands fa-whatsapp text-2xl transition-all duration-300';
+    clearTimeout(waHideTimeout);
+}
+
+// Tutup bubble jika klik di luar area floating WA
+document.addEventListener('click', (e) => {
+    const floatEl = document.getElementById('floatingWA');
+    if (waBubbleOpen && floatEl && !floatEl.contains(e.target)) {
+        closeWABubble();
+    }
+});
+
+// Sembunyikan floating button saat cart/modal terbuka agar tidak bentrok
+function updateFloatingWAVisibility(hide) {
+    const el = document.getElementById('floatingWA');
+    if (!el) return;
+    el.style.opacity    = hide ? '0' : '1';
+    el.style.pointerEvents = hide ? 'none' : 'auto';
+    el.style.transform  = hide ? 'scale(0.8)' : 'scale(1)';
+}
+
 function renderMenuGroups() {
     const grid = document.getElementById('menuGrid');
     grid.innerHTML = '';
@@ -520,12 +566,15 @@ function toggleCart() {
         modal.classList.remove('opacity-0', 'pointer-events-none');
         sidebar.classList.remove('translate-x-full');
         document.body.style.overflow = 'hidden';
+        updateFloatingWAVisibility(true);
+        closeWABubble();
     } else {
         sidebar.classList.add('translate-x-full');
         modal.classList.add('opacity-0', 'pointer-events-none');
         if (document.getElementById('variantModal').classList.contains('opacity-0')) {
             document.body.style.overflow = '';
         }
+        updateFloatingWAVisibility(false);
     }
 }
 
@@ -640,44 +689,162 @@ function processWhatsAppCheckout() {
     if (!isShopOpen) return alert("Angkringan Senthir sedang tutup.");
     if (cart.length === 0) return;
 
-    const adminPhone = "6285880706634"; // GANTI DENGAN NOMOR WA LU
     const customerName = document.getElementById('customerName').value.trim();
-    let subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-    let total = subtotal + (deliveryMethod === 'delivery' ? shippingCost : 0);
-    let address = document.getElementById('addressInput').value.trim();
+    const address      = document.getElementById('addressInput')?.value.trim() ?? '';
 
     if (customerName === '') {
         alert("Nama penerima wajib diisi.");
         document.getElementById('customerName').focus();
         return;
     }
-
     if (deliveryMethod === 'delivery' && !locationDetected) {
-        alert("Lokasi kamu wajib dideteksi dulu sebelum memesan. Tekan tombol \"Cek Lokasi Saya\" dan izinkan akses lokasi.");
+        alert("Lokasi kamu wajib dideteksi dulu. Tekan tombol \"Cek Lokasi Saya\".");
         document.getElementById('btnCekLokasi').scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
-
     if (deliveryMethod === 'delivery' && userDistance > 4) {
-        alert("Lokasi kamu terlalu jauh untuk pengantaran (Maks 4km). Silakan pilih Makan di Tempat atau cek ulang lokasi.");
+        alert("Lokasi kamu terlalu jauh untuk pengantaran (Maks 4km).");
         return;
     }
-
     if (deliveryMethod === 'delivery' && address === '') {
         alert("Detail alamat tidak boleh kosong.");
         document.getElementById('addressInput').focus();
         return;
     }
 
+    // Semua validasi lulus → tampilkan modal konfirmasi dulu
+    openConfirmModal(customerName, address);
+}
+
+function openConfirmModal(customerName, address) {
+    const isDelivery = deliveryMethod === 'delivery';
+    const subtotal   = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const ongkir     = isDelivery ? shippingCost : 0;
+    const total      = subtotal + ongkir;
+
+    // Nama & metode
+    document.getElementById('confirmName').textContent = customerName;
+    document.getElementById('confirmMethod').innerHTML = isDelivery
+        ? '<i class="fa-solid fa-motorcycle text-ember mr-1"></i> Pesan Antar'
+        : '<i class="fa-solid fa-store text-ember mr-1"></i> Makan di Tempat';
+
+    // Estimasi waktu
+    document.getElementById('confirmEtaText').textContent = isDelivery
+        ? '25–40 menit (tergantung jarak)'
+        : '10–20 menit (siap di tempat)';
+
+    // Step label adaptif
+    const deliverIcon  = document.getElementById('stepDeliverIcon');
+    const deliverLabel = document.getElementById('stepDeliverLabel');
+    deliverIcon.className  = isDelivery
+        ? 'fa-solid fa-motorcycle text-parchment/40 text-xs'
+        : 'fa-solid fa-bell-concierge text-parchment/40 text-xs';
+    deliverLabel.textContent = isDelivery ? 'Diantar' : 'Siap';
+
+    // Daftar item
+    document.getElementById('confirmItemList').innerHTML = cart.map(item => `
+        <div class="flex justify-between items-center px-4 py-3">
+            <div>
+                <p class="text-darker font-semibold text-sm">${item.name}</p>
+                <p class="text-darker/40 text-xs">${item.qty} × Rp ${item.price.toLocaleString('id-ID')}</p>
+            </div>
+            <span class="text-darker font-bold text-sm">Rp ${(item.qty * item.price).toLocaleString('id-ID')}</span>
+        </div>
+    `).join('');
+
+    // Biaya
+    document.getElementById('confirmSubtotal').textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+    document.getElementById('confirmTotal').textContent    = `Rp ${total.toLocaleString('id-ID')}`;
+
+    const shippingRow = document.getElementById('confirmShippingRow');
+    if (isDelivery && ongkir > 0) {
+        shippingRow.classList.remove('hidden');
+        document.getElementById('confirmShipping').textContent = `Rp ${ongkir.toLocaleString('id-ID')}`;
+    } else {
+        shippingRow.classList.add('hidden');
+    }
+
+    // Alamat
+    const addrRow = document.getElementById('confirmAddressRow');
+    if (isDelivery && address) {
+        addrRow.classList.remove('hidden');
+        document.getElementById('confirmAddress').textContent = address;
+    } else {
+        addrRow.classList.add('hidden');
+    }
+
+    // Simpan data pending
+    window._pendingOrder = { customerName, address, subtotal, ongkir, total };
+
+    // Tampilkan modal
+    const modal   = document.getElementById('confirmModal');
+    const content = document.getElementById('confirmModalContent');
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    requestAnimationFrame(() => {
+        content.classList.remove('translate-y-6', 'md:scale-95');
+    });
+    document.body.style.overflow = 'hidden';
+
+    // Animasi step cascade
+    setTimeout(() => {
+        const sp = document.getElementById('stepProcess');
+        sp.className = 'w-7 h-7 rounded-full bg-ember/30 border border-ember/50 flex items-center justify-center transition-all duration-500';
+        sp.querySelector('i').className = 'fa-solid fa-fire text-ember text-xs';
+        document.getElementById('stepProcessLabel').className = 'text-[10px] text-ember/70 mt-1 font-semibold transition-colors duration-500';
+    }, 450);
+    setTimeout(() => {
+        const sd = document.getElementById('stepDeliver');
+        sd.className = 'w-7 h-7 rounded-full bg-ember/20 border border-ember/40 flex items-center justify-center transition-all duration-500';
+        const icon = sd.querySelector('i');
+        icon.className = icon.className.replace('text-parchment/40', 'text-ember/60');
+        document.getElementById('stepDeliverLabel').className = 'text-[10px] text-ember/50 mt-1 font-semibold transition-colors duration-500';
+    }, 900);
+}
+
+function closeConfirmModal() {
+    const modal   = document.getElementById('confirmModal');
+    const content = document.getElementById('confirmModalContent');
+    content.classList.add('translate-y-6', 'md:scale-95');
+    setTimeout(() => {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        document.body.style.overflow = '';
+
+        // Reset step animasi untuk next kali
+        const sp = document.getElementById('stepProcess');
+        sp.className = 'w-7 h-7 rounded-full bg-parchment/15 border border-parchment/20 flex items-center justify-center transition-all duration-500';
+        sp.querySelector('i').className = 'fa-solid fa-fire text-parchment/40 text-xs';
+        document.getElementById('stepProcessLabel').className = 'text-[10px] text-parchment/40 mt-1 font-semibold transition-colors duration-500';
+        const sd = document.getElementById('stepDeliver');
+        sd.className = 'w-7 h-7 rounded-full bg-parchment/15 border border-parchment/20 flex items-center justify-center transition-all duration-500';
+        const sdIcon = sd.querySelector('i');
+        sdIcon.className = sdIcon.className.replace('text-ember/60', 'text-parchment/40');
+        document.getElementById('stepDeliverLabel').className = 'text-[10px] text-parchment/40 mt-1 font-semibold transition-colors duration-500';
+    }, 300);
+}
+
+function sendToWhatsApp() {
+    const adminPhone = "6285880706634";
+    const { customerName, address, subtotal, ongkir, total } = window._pendingOrder;
+
     let waText = `*🥘 PESANAN ANGKRINGAN SENTHIR 🥘*\n================================\n\n*Atas Nama:* ${customerName}\n\n*Daftar Menu:*\n`;
-    cart.forEach((item, index) => {
-        waText += `${index + 1}. ${item.name}\n   ${item.qty} x Rp ${item.price.toLocaleString('id-ID')} = Rp ${(item.qty * item.price).toLocaleString('id-ID')}\n`;
+    cart.forEach((item, i) => {
+        waText += `${i + 1}. ${item.name}\n   ${item.qty} x Rp ${item.price.toLocaleString('id-ID')} = Rp ${(item.qty * item.price).toLocaleString('id-ID')}\n`;
     });
     waText += `--------------------------------\nSubtotal  : *Rp ${subtotal.toLocaleString('id-ID')}*\n\n*Metode Pemesanan:*\nTipe      : ${deliveryMethod === 'delivery' ? '🛵 Diantarkan' : '🏪 Makan di Tempat'}\n`;
     if (deliveryMethod === 'delivery') {
-        waText += `Jarak     : ${userDistance.toFixed(2)} km\nOngkir    : Rp ${shippingCost.toLocaleString('id-ID')}\nAlamat    : ${address}\n`;
+        waText += `Jarak     : ${userDistance.toFixed(2)} km\nOngkir    : Rp ${ongkir.toLocaleString('id-ID')}\nAlamat    : ${address}\n`;
     }
     waText += `\n================================\n*TOTAL BAYAR : Rp ${total.toLocaleString('id-ID')}*\n================================\n\n_Mohon segera diproses ya Min!_`;
 
     window.open(`https://wa.me/${adminPhone}?text=${encodeURIComponent(waText)}`, '_blank');
+    closeConfirmModal();
+
+    // Reset cart setelah order terkirim
+    setTimeout(() => {
+        cart = [];
+        renderCart();
+        toggleCart();
+        if (document.getElementById('customerName'))
+            document.getElementById('customerName').value = '';
+    }, 350);
 }
