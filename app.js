@@ -23,14 +23,59 @@ let userDistance = 0;
 let isShopOpen = true;
 let locationDetected = false;
 
+const CART_STORAGE_KEY = 'senthirCart';
+const HISTORY_STORAGE_KEY = 'senthirOrderHistory';
+const HISTORY_MAX_ITEMS = 15;
+
+function saveCartToStorage() {
+    try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    } catch (e) {
+        console.warn('Gagal menyimpan keranjang ke localStorage:', e);
+    }
+}
+
+function loadCartFromStorage() {
+    try {
+        const saved = localStorage.getItem(CART_STORAGE_KEY);
+        cart = saved ? JSON.parse(saved) : [];
+    } catch (e) {
+        console.warn('Gagal membaca keranjang dari localStorage:', e);
+        cart = [];
+    }
+}
+
+function loadOrderHistory() {
+    try {
+        const saved = localStorage.getItem(HISTORY_STORAGE_KEY);
+        return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+        console.warn('Gagal membaca riwayat pesanan:', e);
+        return [];
+    }
+}
+
+function saveOrderToHistory(order) {
+    try {
+        const history = loadOrderHistory();
+        history.unshift(order);
+        if (history.length > HISTORY_MAX_ITEMS) history.length = HISTORY_MAX_ITEMS;
+        localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
+    } catch (e) {
+        console.warn('Gagal menyimpan riwayat pesanan:', e);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     validateOperatingHours();
-    setInterval(validateOperatingHours, 60000); 
+    setInterval(validateOperatingHours, 1000); 
+    loadCartFromStorage();
     renderMenuGroups();
     renderFeaturedMenu();
     initKeunggulanReveal();
     initReviewSlider();
     initCounterAnimation();
+    updateCartUI();
 
     const nameInput = document.getElementById('customerName');
     if (nameInput) {
@@ -81,24 +126,29 @@ function validateOperatingHours() {
         document.body.style.overflow = '';
     }
 
-    // Update badge status live di navbar
+    // Update badge status live di navbar — titik warna = status buka/tutup, teks = jam real-time WIB
     const badge = document.getElementById('shopStatusBadge');
     const dot = document.getElementById('shopStatusDot');
     const text = document.getElementById('shopStatusText');
     if (badge && dot && text) {
+        const liveTime = new Date().toLocaleTimeString('id-ID', {
+            timeZone: 'Asia/Jakarta',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
         if (isShopOpen) {
             badge.classList.remove('bg-red-500/10', 'border-red-500/30', 'text-red-400');
             badge.classList.add('bg-green-500/10', 'border-green-500/30', 'text-green-400');
             dot.classList.remove('bg-red-400');
             dot.classList.add('bg-green-400', 'animate-pulse');
-            text.textContent = 'Buka Sekarang';
         } else {
             badge.classList.remove('bg-green-500/10', 'border-green-500/30', 'text-green-400');
             badge.classList.add('bg-red-500/10', 'border-red-500/30', 'text-red-400');
             dot.classList.remove('bg-green-400', 'animate-pulse');
             dot.classList.add('bg-red-400');
-            text.textContent = 'Tutup Sekarang';
         }
+        text.textContent = `${liveTime} WIB`;
     }
 }
 
@@ -135,12 +185,12 @@ function renderFeaturedMenu() {
         card.innerHTML = `
             <div class="relative h-44 hover-zoom">
                 <img src="${group.img}" class="w-full h-full object-cover" loading="lazy">
-                <div class="absolute inset-0 bg-gradient-to-t from-wood2 to-transparent opacity-80"></div>
-                <div class="absolute bottom-3 left-4 right-4">
-                    <h3 class="font-serif text-lg font-bold text-white leading-tight">${group.groupName}</h3>
-                </div>
             </div>
             <div class="p-5 flex-1 flex flex-col">
+                <div class="flex justify-between items-start gap-2 mb-1">
+                    <h3 class="font-serif text-lg font-bold text-ink leading-tight">${group.groupName}</h3>
+                    <span class="shrink-0 bg-ember/10 text-ember text-[10px] font-bold px-2 py-1 rounded border border-ember/30">${group.variants.length} Varian</span>
+                </div>
                 <p class="text-stone text-xs mb-4 line-clamp-2">${group.desc}</p>
                 <button onclick="openVariantModal('${group.id}')" class="w-full border border-ember text-ember hover:bg-ember hover:text-white py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 mt-auto text-sm">
                     <i class="fa-solid fa-list-ul"></i> Pilih Varian
@@ -382,14 +432,15 @@ function renderMenuGroups() {
         card.innerHTML = `
             <div class="relative h-48 hover-zoom">
                 <img src="${group.img}" class="w-full h-full object-cover" loading="lazy">
-                <div class="absolute inset-0 bg-gradient-to-t from-wood2 to-transparent opacity-80"></div>
-                <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                    <h3 class="font-serif text-2xl font-bold text-white leading-tight">${group.groupName}</h3>
-                    <span class="bg-ember text-darker text-xs font-bold px-2 py-1 rounded">${group.variants.length} Varian</span>
-                </div>
             </div>
             <div class="p-5 flex-1 flex flex-col justify-between">
-                <p class="text-stone text-sm mb-5">${group.desc}</p>
+                <div>
+                    <div class="flex justify-between items-start gap-3 mb-2">
+                        <h3 class="font-serif text-xl font-bold text-ink leading-tight">${group.groupName}</h3>
+                        <span class="shrink-0 bg-ember/10 text-ember text-xs font-bold px-2 py-1 rounded border border-ember/30">${group.variants.length} Varian</span>
+                    </div>
+                    <p class="text-stone text-sm mb-5">${group.desc}</p>
+                </div>
                 <button onclick="openVariantModal('${group.id}')" class="w-full border border-ember text-ember hover:bg-ember hover:text-white py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2">
                     <i class="fa-solid fa-list-ul"></i> Pilih Varian
                 </button>
@@ -466,6 +517,7 @@ function addVariantToCart(variantId, groupId, btnElement) {
     if (existing) existing.qty += 1;
     else cart.push(itemToAdd);
     
+    saveCartToStorage();
     updateCartUI();
     showToast();
     
@@ -487,6 +539,7 @@ function updateCartQuantity(id, delta) {
         cart[itemIndex].qty += delta;
         if (cart[itemIndex].qty <= 0) cart.splice(itemIndex, 1);
     }
+    saveCartToStorage();
     updateCartUI();
 }
 
@@ -839,12 +892,122 @@ function sendToWhatsApp() {
     window.open(`https://wa.me/${adminPhone}?text=${encodeURIComponent(waText)}`, '_blank');
     closeConfirmModal();
 
+    // Simpan pesanan ini ke riwayat sebelum cart dikosongkan
+    saveOrderToHistory({
+        id: Date.now(),
+        date: new Date().toISOString(),
+        customerName,
+        deliveryMethod,
+        address: deliveryMethod === 'delivery' ? address : '',
+        items: cart.map(item => ({ id: item.id, name: item.name, price: item.price, qty: item.qty })),
+        subtotal,
+        ongkir,
+        total
+    });
+
     // Reset cart setelah order terkirim
     setTimeout(() => {
         cart = [];
-        renderCart();
+        saveCartToStorage();
+        updateCartUI();
         toggleCart();
         if (document.getElementById('customerName'))
             document.getElementById('customerName').value = '';
     }, 350);
+}
+
+function formatHistoryDate(isoString) {
+    const d = new Date(isoString);
+    return d.toLocaleDateString('id-ID', {
+        day: 'numeric', month: 'short', year: 'numeric'
+    }) + ', ' + d.toLocaleTimeString('id-ID', {
+        timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit'
+    }) + ' WIB';
+}
+
+function renderOrderHistory() {
+    const list = document.getElementById('historyList');
+    const emptyState = document.getElementById('emptyHistory');
+    if (!list || !emptyState) return;
+
+    const history = loadOrderHistory();
+    list.innerHTML = '';
+
+    if (history.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+    }
+    emptyState.classList.add('hidden');
+
+    history.forEach(order => {
+        const itemsSummary = order.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+        const methodLabel = order.deliveryMethod === 'delivery' ? '🛵 Pesan Antar' : '🏪 Makan di Tempat';
+        const card = document.createElement('div');
+        card.className = 'bg-creamCard border border-taupe rounded-xl p-4 relative overflow-hidden';
+        card.innerHTML = `
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-ember"></div>
+            <div class="pl-2">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-xs text-stone">${formatHistoryDate(order.date)}</span>
+                    <span class="text-ember font-bold text-sm">Rp ${order.total.toLocaleString('id-ID')}</span>
+                </div>
+                <p class="text-ink text-sm font-semibold mb-1">${order.customerName}</p>
+                <p class="text-stone text-xs mb-1">${methodLabel}</p>
+                <p class="text-ink/70 text-xs leading-relaxed mb-3">${itemsSummary}</p>
+                <button onclick="reorderFromHistory(${order.id})" class="w-full bg-ember text-dark font-bold py-2.5 rounded-lg hover:bg-emberHover transition-all flex items-center justify-center gap-2 text-sm">
+                    <i class="fa-solid fa-rotate-right"></i> Pesan Lagi
+                </button>
+            </div>
+        `;
+        list.appendChild(card);
+    });
+}
+
+function toggleHistoryModal() {
+    const modal = document.getElementById('historyModal');
+    const sidebar = document.getElementById('historySidebar');
+    if (modal.classList.contains('opacity-0')) {
+        renderOrderHistory();
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        sidebar.classList.remove('translate-x-full');
+        document.body.style.overflow = 'hidden';
+        updateFloatingWAVisibility(true);
+        closeWABubble();
+    } else {
+        sidebar.classList.add('translate-x-full');
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        document.body.style.overflow = '';
+        updateFloatingWAVisibility(false);
+    }
+}
+
+function reorderFromHistory(orderId) {
+    const history = loadOrderHistory();
+    const order = history.find(o => o.id === orderId);
+    if (!order) return;
+
+    if (!isShopOpen) {
+        alert('Angkringan Senthir sedang tutup. Pesanan belum bisa diproses sekarang.');
+        return;
+    }
+
+    // Gabungkan item dari riwayat ke cart yang aktif
+    order.items.forEach(histItem => {
+        const existing = cart.find(c => c.id === histItem.id);
+        if (existing) existing.qty += histItem.qty;
+        else cart.push({ ...histItem });
+    });
+
+    saveCartToStorage();
+    updateCartUI();
+    toggleHistoryModal();
+    if (document.getElementById('cartModal').classList.contains('opacity-0')) {
+        toggleCart();
+    }
+
+    const nameInput = document.getElementById('customerName');
+    if (nameInput && nameInput.value.trim() === '') {
+        nameInput.value = order.customerName;
+        updateCartUI();
+    }
 }
