@@ -189,6 +189,9 @@
                     <span id="shopStatusDot" class="w-1.5 h-1.5 rounded-full"></span>
                     <span id="shopStatusText">Mengecek jam buka...</span>
                 </span>
+                <button id="adminModeChip" onclick="promptAdminLogin()" class="hidden items-center gap-1.5 text-[10px] md:text-[11px] font-bold px-2.5 py-1 rounded-full bg-flame text-darker pulse-amber">
+                    <i class="fa-solid fa-screwdriver-wrench"></i> ADMIN
+                </button>
             </div>
             <nav class="hidden md:flex gap-8 items-center">
                 <button onclick="switchView('home')" class="hover:text-ember transition-colors font-medium">Beranda</button>
@@ -291,10 +294,10 @@
                     <div class="w-full md:w-1/2">
                         <h2 class="font-serif text-4xl font-bold text-white mb-6">Cerita di Balik <span class="text-ember">Senthir</span></h2>
                         <p class="text-parchment leading-relaxed mb-4 text-lg text-justify">
-                            Angkringan Senthir bukan hanya sekadar tempat pengisi perut di kala malam. Kami lahir dari filosofi seulas lampu minyak tradisional "Sebuah Senthir" yang menjadi penerang sederhana di tengah pekatnya gulita. Di bawah temaram sinarnya yang hangat, kami ingin menciptakan sebuah ruang di mana siapa saja bisa duduk bersama, melepas penat, dan berbagi cerita dengan jujur apa adanya. 
+                            Lebih dari sekadar tempat makan, Angkringan Senthir lahir dari filosofi sebuah lampu minyak tradisional seuntai cahaya kecil yang setia mengusir pekatnya malam. Di bawah pendaran sinarnya yang hangat, kami merajut kembali ruang bincang yang jujur, santai, dan penuh keakraban. 
                         </p>
                         <p class="text-parchment leading-relaxed mb-4 text-lg text-justify">
-                            Lewat aroma magis nasi bakar, hangatnya kepulan wedang jahe, dan pilihan sate bakar yang legendaris, kami menghidangkan lebih dari sekadar kuliner malam. Kami menyajikan kehangatan sebuah rumah. Karena di Angkringan Senthir, setiap cangkir yang dituangkan adalah kisah, dan setiap suapan adalah jalan untuk pulang.
+                            Menemani langkah malammu, kami menghidangkan kehangatan sejati lewat aroma nasi kucing yang khas, kepulan wedangan ramuan jahe, hingga jejeran sate bakar yang menggugah selera. Di sini, setiap sudut adalah cerita, dan setiap suapan adalah pulang.
                         </p>
                     </div>
                 </div>
@@ -707,6 +710,11 @@
             <p class="text-center text-parchment/40 text-xs">&copy; 2026 Angkringan Senthir. Dibuat dengan kehangatan.</p>
             <p class="text-center text-parchment/30 text-[11px] mt-2">
                 Website dikembangkan oleh <a href="https://dimas-hidayat.netlify.app" target="_blank" rel="noopener" class="text-ember/80 hover:text-ember hover:underline font-medium">Pengembang</a>
+            </p>
+            <p class="text-center mt-3">
+                <button id="adminModeBtn" onclick="promptAdminLogin()" class="text-parchment/25 hover:text-ember/70 text-[10px] transition-colors">
+                    <i class="fa-solid fa-lock text-[9px] mr-1"></i>Kelola Stok
+                </button>
             </p>
         </div>
     </footer>
