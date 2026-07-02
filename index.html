@@ -724,15 +724,6 @@
         </button>
     </nav>
 
-    <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/6285880706634?text=Halo%20Angkringan%20Senthir%2C%20saya%20mau%20tanya-tanya%20dulu%20nih"
-       target="_blank" rel="noopener" aria-label="Chat via WhatsApp"
-       class="fixed z-30 bottom-24 md:bottom-8 right-5 md:right-8 w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-2xl transition-transform hover:scale-110 group">
-        <span class="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-40"></span>
-        <span class="absolute inset-0 rounded-full bg-[#25D366] group-hover:bg-[#20BD5A] transition-colors"></span>
-        <i class="fa-brands fa-whatsapp text-white text-2xl md:text-3xl relative z-10"></i>
-    </a>
-
     <!-- Lightbox Galeri -->
     <div id="galleryLightbox" class="fixed inset-0 z-[70] bg-darker/95 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4">
         <button onclick="closeGalleryLightbox()" class="absolute top-5 right-5 text-white bg-wood/60 hover:bg-ember w-10 h-10 rounded-full flex items-center justify-center transition-colors z-10">
@@ -745,6 +736,113 @@
         <button onclick="changeGalleryImage(1)" class="absolute right-3 md:right-8 text-white bg-wood/60 hover:bg-ember w-10 h-10 rounded-full flex items-center justify-center transition-colors">
             <i class="fa-solid fa-chevron-right"></i>
         </button>
+    </div>
+
+    <!-- Modal Konfirmasi Order -->
+    <div id="confirmModal" class="fixed inset-0 z-[80] bg-darker/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 flex items-end md:items-center justify-center p-0 md:p-4">
+        <div id="confirmModalContent" class="w-full md:max-w-md bg-parchment rounded-t-3xl md:rounded-3xl overflow-hidden shadow-2xl transform translate-y-6 md:scale-95 transition-all duration-400">
+
+            <!-- Header gelap -->
+            <div class="bg-darker px-6 pt-6 pb-5 relative overflow-hidden">
+                <div class="absolute -top-6 -right-6 w-28 h-28 bg-ember/10 rounded-full"></div>
+                <div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-ember/40 to-transparent"></div>
+                <div class="flex items-center gap-4 mb-5">
+                    <div class="w-14 h-14 rounded-2xl bg-ember/15 border border-ember/30 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-basket-shopping text-ember text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-parchment/50 text-xs font-semibold uppercase tracking-widest mb-0.5">Pesanan Masuk</p>
+                        <h3 class="text-parchment font-serif text-xl font-bold">Ringkasan Pesanan</h3>
+                    </div>
+                </div>
+                <!-- Progress steps -->
+                <div class="flex items-center">
+                    <div class="flex flex-col items-center">
+                        <div class="w-7 h-7 rounded-full bg-ember flex items-center justify-center">
+                            <i class="fa-solid fa-check text-darker text-xs"></i>
+                        </div>
+                        <span class="text-[10px] text-ember mt-1 font-semibold">Diterima</span>
+                    </div>
+                    <div class="flex-1 h-px bg-ember/30 mx-1 mb-4"></div>
+                    <div class="flex flex-col items-center">
+                        <div id="stepProcess" class="w-7 h-7 rounded-full bg-parchment/15 border border-parchment/20 flex items-center justify-center transition-all duration-500">
+                            <i class="fa-solid fa-fire text-parchment/40 text-xs"></i>
+                        </div>
+                        <span id="stepProcessLabel" class="text-[10px] text-parchment/40 mt-1 font-semibold transition-colors duration-500">Dimasak</span>
+                    </div>
+                    <div class="flex-1 h-px bg-parchment/15 mx-1 mb-4"></div>
+                    <div class="flex flex-col items-center">
+                        <div id="stepDeliver" class="w-7 h-7 rounded-full bg-parchment/15 border border-parchment/20 flex items-center justify-center transition-all duration-500">
+                            <i id="stepDeliverIcon" class="fa-solid fa-motorcycle text-parchment/40 text-xs"></i>
+                        </div>
+                        <span id="stepDeliverLabel" class="text-[10px] text-parchment/40 mt-1 font-semibold transition-colors duration-500">Diantar</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="px-5 py-5 space-y-4 max-h-[55vh] overflow-y-auto scrollbar-hide">
+                <!-- Penerima & Metode -->
+                <div class="flex gap-3">
+                    <div class="flex-1 bg-white border border-darker/10 rounded-2xl px-4 py-3">
+                        <p class="text-darker/40 text-[10px] font-semibold uppercase tracking-wide mb-1">Penerima</p>
+                        <p id="confirmName" class="text-darker font-bold text-sm"></p>
+                    </div>
+                    <div class="flex-1 bg-white border border-darker/10 rounded-2xl px-4 py-3">
+                        <p class="text-darker/40 text-[10px] font-semibold uppercase tracking-wide mb-1">Metode</p>
+                        <p id="confirmMethod" class="text-darker font-bold text-sm flex items-center gap-1.5"></p>
+                    </div>
+                </div>
+                <!-- Estimasi waktu -->
+                <div class="flex items-center gap-3 bg-ember/8 border border-ember/20 rounded-2xl px-4 py-3">
+                    <div class="w-8 h-8 bg-ember/15 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-clock text-ember text-sm"></i>
+                    </div>
+                    <div>
+                        <p class="text-darker/50 text-[10px] font-semibold uppercase tracking-wide">Estimasi Waktu</p>
+                        <p id="confirmEtaText" class="text-darker font-bold text-sm"></p>
+                    </div>
+                </div>
+                <!-- Daftar item -->
+                <div class="bg-white border border-darker/10 rounded-2xl overflow-hidden">
+                    <div class="px-4 py-3 border-b border-darker/8">
+                        <p class="text-darker/50 text-[10px] font-semibold uppercase tracking-wide">Daftar Menu</p>
+                    </div>
+                    <div id="confirmItemList" class="divide-y divide-darker/6"></div>
+                </div>
+                <!-- Rincian biaya -->
+                <div class="bg-white border border-darker/10 rounded-2xl px-4 py-4 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-darker/50 text-sm">Subtotal</span>
+                        <span id="confirmSubtotal" class="text-darker text-sm font-medium"></span>
+                    </div>
+                    <div id="confirmShippingRow" class="hidden flex justify-between items-center">
+                        <span class="text-darker/50 text-sm">Ongkos Kirim</span>
+                        <span id="confirmShipping" class="text-darker text-sm font-medium"></span>
+                    </div>
+                    <div class="h-px bg-darker/8 my-1"></div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-darker font-bold">Total Bayar</span>
+                        <span id="confirmTotal" class="text-ember font-bold text-lg"></span>
+                    </div>
+                </div>
+                <!-- Alamat (hanya delivery) -->
+                <div id="confirmAddressRow" class="hidden bg-white border border-darker/10 rounded-2xl px-4 py-3">
+                    <p class="text-darker/40 text-[10px] font-semibold uppercase tracking-wide mb-1">Alamat Pengantaran</p>
+                    <p id="confirmAddress" class="text-darker text-sm leading-relaxed"></p>
+                </div>
+            </div>
+
+            <!-- Footer aksi -->
+            <div class="px-5 py-4 bg-white border-t border-darker/10 flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 border border-darker/15 text-darker/60 hover:text-darker hover:border-darker/30 py-3.5 rounded-2xl font-bold text-sm transition-all">
+                    Batal
+                </button>
+                <button onclick="sendToWhatsApp()" class="flex-[2] bg-ember text-darker py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-emberHover transition-all shadow-glow">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Konfirmasi & Kirim WA
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Modal Varian -->
@@ -852,6 +950,39 @@
             </div>
         </div>
     </div>
+    <!-- Floating WA Button -->
+    <div id="floatingWA" class="fixed right-5 bottom-24 md:bottom-8 z-[45] flex flex-col items-end gap-3">
+
+        <!-- Bubble pesan (muncul saat hover/expand) -->
+        <div id="waBubble" class="opacity-0 translate-y-2 pointer-events-none transition-all duration-300 flex flex-col items-end gap-2">
+            <a href="https://wa.me/6285880706634?text=Halo%20Angkringan%20Senthir%2C%20saya%20mau%20tanya%20dulu%20nih%20%F0%9F%98%8A"
+               target="_blank"
+               class="flex items-center gap-3 bg-parchment text-darker text-sm font-semibold px-4 py-3 rounded-2xl rounded-br-sm shadow-lg border border-darker/10 whitespace-nowrap hover:bg-white transition-colors">
+                <i class="fa-solid fa-comment-dots text-ember"></i>
+                Tanya dulu sebelum pesan
+            </a>
+            <a href="https://wa.me/6285880706634?text=Halo%20Senthir%2C%20ada%20menu%20spesial%20malam%20ini%3F"
+               target="_blank"
+               class="flex items-center gap-3 bg-parchment text-darker text-sm font-semibold px-4 py-3 rounded-2xl rounded-br-sm shadow-lg border border-darker/10 whitespace-nowrap hover:bg-white transition-colors">
+                <i class="fa-solid fa-utensils text-ember"></i>
+                Cek menu spesial malam ini
+            </a>
+        </div>
+
+        <!-- Tombol utama -->
+        <button id="waFloatBtn"
+            onclick="toggleWABubble()"
+            aria-label="Chat WhatsApp"
+            class="relative w-14 h-14 bg-ember rounded-full shadow-[0_8px_24px_rgba(194,90,26,0.45)] flex items-center justify-center text-darker hover:bg-emberHover transition-all duration-300 hover:scale-110 active:scale-95">
+            <!-- Ikon WA -->
+            <i id="waFloatIcon" class="fa-brands fa-whatsapp text-2xl transition-all duration-300"></i>
+            <!-- Notif pulse -->
+            <span class="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-darker">
+                <span class="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-75"></span>
+            </span>
+        </button>
+    </div>
+
     <script src="app.js"></script>
 </body>
 </html>
