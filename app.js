@@ -23,6 +23,82 @@ let userDistance = 0;
 let isShopOpen = true;
 let locationDetected = false;
 
+/* ==========================================================
+   PWA: Service Worker Registration & Install Prompt
+   ========================================================== */
+let deferredInstallPrompt = null;
+
+function isIosDevice() {
+    return /iphone|ipad|ipod/i.test(window.navigator.userAgent) && !window.MSStream;
+}
+
+function isRunningStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches
+        || window.navigator.standalone === true;
+}
+
+function registerServiceWorker() {
+    if (!('serviceWorker' in navigator)) return;
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+            .then((reg) => console.log('[PWA] Service Worker terdaftar, scope:', reg.scope))
+            .catch((err) => console.warn('[PWA] Gagal mendaftarkan Service Worker:', err));
+    });
+}
+
+function showInstallButton() {
+    const btn = document.getElementById('installAppBtn');
+    if (!btn) return;
+    btn.classList.remove('hidden');
+    btn.classList.add('flex');
+}
+
+function hideInstallButton() {
+    const btn = document.getElementById('installAppBtn');
+    if (!btn) return;
+    btn.classList.add('hidden');
+    btn.classList.remove('flex');
+}
+
+function initInstallPrompt() {
+    if (isRunningStandalone()) return; // sudah terpasang, tombol tak perlu muncul
+
+    // Chrome/Edge/Android: event ini tersedia saat kriteria installable terpenuhi
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        showInstallButton();
+    });
+
+    // iOS Safari tidak pernah mengirim beforeinstallprompt,
+    // jadi tombolnya tetap ditampilkan dengan instruksi manual.
+    if (isIosDevice()) {
+        showInstallButton();
+    }
+
+    window.addEventListener('appinstalled', () => {
+        deferredInstallPrompt = null;
+        hideInstallButton();
+    });
+}
+
+async function installApp() {
+    if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        if (outcome === 'accepted') hideInstallButton();
+        return;
+    }
+
+    if (isIosDevice()) {
+        alert('Cara pasang di iPhone/iPad:\n\n1. Ketuk ikon Share (kotak dengan panah ke atas) di Safari\n2. Pilih "Add to Home Screen" / "Tambah ke Layar Utama"\n3. Ketuk "Tambah"');
+        return;
+    }
+
+    alert('Aplikasi belum bisa dipasang saat ini. Pastikan kamu membuka situs ini lewat https:// (bukan file lokal), lalu coba lagi.');
+}
+
 const CART_STORAGE_KEY = 'senthirCart';
 const HISTORY_STORAGE_KEY = 'senthirOrderHistory';
 const HISTORY_MAX_ITEMS = 15;
@@ -67,6 +143,8 @@ function saveOrderToHistory(order) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    registerServiceWorker();
+    initInstallPrompt();
     validateOperatingHours();
     setInterval(validateOperatingHours, 1000); 
     loadCartFromStorage();
@@ -79,7 +157,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const nameInput = document.getElementById('customerName');
     if (nameInput) {
-        nameInput.addEventListener('input', updateCartUI);
+        // Pakai fungsi ringan khusus validasi tombol checkout, BUKAN updateCartUI() penuh.
+        // updateCartUI() akan render ulang seluruh list item cart — kalau itu yang
+        // dipanggil di setiap keystroke, ketikan nama jadi kerasa patah-patah.
+        nameInput.addEventListener('input', updateCheckoutButtonState);
     }
 });
 
@@ -114,16 +195,22 @@ function validateOperatingHours() {
     // Buka 18:00 - 00:00 (sesuai teks di overlay)
     const isClosed = currentHour < 0;
     const overlay = document.getElementById('closedOverlay');
+    const statusChanged = isShopOpen === isClosed; // true kalau isShopOpen lama = isClosed baru (artinya berubah)
+
     if (isClosed) {
         isShopOpen = false;
-        overlay.classList.remove('hidden');
-        overlay.classList.add('flex');
-        document.body.style.overflow = 'hidden';
+        if (statusChanged) {
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
     } else {
         isShopOpen = true;
-        overlay.classList.remove('flex');
-        overlay.classList.add('hidden');
-        document.body.style.overflow = '';
+        if (statusChanged) {
+            overlay.classList.remove('flex');
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
     }
 
     // Update badge status live di navbar — titik warna = status buka/tutup, teks = jam real-time WIB
@@ -137,16 +224,20 @@ function validateOperatingHours() {
             minute: '2-digit',
             second: '2-digit'
         });
-        if (isShopOpen) {
-            badge.classList.remove('bg-red-500/10', 'border-red-500/30', 'text-red-400');
-            badge.classList.add('bg-green-500/10', 'border-green-500/30', 'text-green-400');
-            dot.classList.remove('bg-red-400');
-            dot.classList.add('bg-green-400', 'animate-pulse');
-        } else {
-            badge.classList.remove('bg-green-500/10', 'border-green-500/30', 'text-green-400');
-            badge.classList.add('bg-red-500/10', 'border-red-500/30', 'text-red-400');
-            dot.classList.remove('bg-green-400', 'animate-pulse');
-            dot.classList.add('bg-red-400');
+        // classList cuma disentuh saat status buka/tutup beneran berubah,
+        // bukan tiap detik — biar nggak ada style recalc yang sia-sia.
+        if (statusChanged) {
+            if (isShopOpen) {
+                badge.classList.remove('bg-red-500/10', 'border-red-500/30', 'text-red-400');
+                badge.classList.add('bg-green-500/10', 'border-green-500/30', 'text-green-400');
+                dot.classList.remove('bg-red-400');
+                dot.classList.add('bg-green-400', 'animate-pulse');
+            } else {
+                badge.classList.remove('bg-green-500/10', 'border-green-500/30', 'text-green-400');
+                badge.classList.add('bg-red-500/10', 'border-red-500/30', 'text-red-400');
+                dot.classList.remove('bg-green-400', 'animate-pulse');
+                dot.classList.add('bg-red-400');
+            }
         }
         text.textContent = `${liveTime} WIB`;
     }
@@ -457,21 +548,21 @@ function openVariantModal(groupId) {
 
     document.getElementById('variantModalTitle').innerText = group.groupName;
     const list = document.getElementById('variantList');
-    list.innerHTML = '';
 
-    group.variants.forEach(variant => {
-        list.innerHTML += `
-            <div class="flex justify-between items-center bg-creamCard p-4 rounded-xl border border-taupe hover:border-ember/50 transition-colors">
-                <div>
-                    <h4 class="text-ink font-medium mb-1">${variant.name}</h4>
-                    <span class="text-ember text-sm font-semibold">Rp ${variant.price.toLocaleString('id-ID')}</span>
-                </div>
-                <button onclick="addVariantToCart('${variant.id}', '${groupId}', this)" class="bg-ember/10 text-ember hover:bg-ember hover:text-white px-4 py-2 rounded-lg text-sm font-bold transition-all border border-ember/20">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
+    // Bangun semua HTML dulu di memori, baru assign SEKALI ke DOM.
+    // (Sebelumnya pakai innerHTML += di dalam loop → tiap iterasi
+    // re-parse seluruh isi list dari awal, jadi lag terutama di HP.)
+    list.innerHTML = group.variants.map(variant => `
+        <div class="flex justify-between items-center bg-creamCard p-4 rounded-xl border border-taupe hover:border-ember/50 transition-colors">
+            <div>
+                <h4 class="text-ink font-medium mb-1">${variant.name}</h4>
+                <span class="text-ember text-sm font-semibold">Rp ${variant.price.toLocaleString('id-ID')}</span>
             </div>
-        `;
-    });
+            <button onclick="addVariantToCart('${variant.id}', '${groupId}', this)" class="bg-ember/10 text-ember hover:bg-ember hover:text-white px-4 py-2 rounded-lg text-sm font-bold transition-all border border-ember/20">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+    `).join('');
 
     const modal = document.getElementById('variantModal');
     const content = document.getElementById('variantModalContent');
@@ -544,6 +635,20 @@ function updateCartQuantity(id, delta) {
 }
 
 // UI KERANJANG DIPERBARUI DI SINI (Lebih Profesional)
+// Validasi ringan: cuma toggle disabled tombol checkout, tanpa sentuh DOM list cart.
+// Ini yang dipanggil tiap keystroke di form nama, biar tetap responsif saat mengetik.
+function updateCheckoutButtonState() {
+    const btnCheckout = document.getElementById('btnCheckout');
+    if (!btnCheckout || cart.length === 0) return;
+
+    const nameInput = document.getElementById('customerName');
+    const nameFilled = nameInput && nameInput.value.trim() !== '';
+    const distanceOk = !(deliveryMethod === 'delivery' && userDistance > 4);
+    const locationOk = deliveryMethod === 'delivery' ? (locationDetected && distanceOk) : true;
+
+    btnCheckout.disabled = !(nameFilled && locationOk);
+}
+
 function updateCartUI() {
     const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
     const badgeDesk = document.getElementById('cartBadgeDesk');
@@ -569,31 +674,29 @@ function updateCartUI() {
     } else {
         emptyState.classList.add('hidden');
         formArea.classList.remove('hidden');
+        updateCheckoutButtonState();
 
-        const nameInput = document.getElementById('customerName');
-        const nameFilled = nameInput && nameInput.value.trim() !== '';
-        const distanceOk = !(deliveryMethod === 'delivery' && userDistance > 4);
-        const locationOk = deliveryMethod === 'delivery' ? (locationDetected && distanceOk) : true;
+        subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
-        btnCheckout.disabled = !(nameFilled && locationOk);
-
-        cart.forEach(item => {
-            subtotal += item.price * item.qty;
-            list.innerHTML += `
-                <div class="flex justify-between items-center bg-creamCard p-4 rounded-xl border border-taupe shadow-sm relative overflow-hidden group">
-                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-taupe group-hover:bg-ember transition-colors"></div>
-                    <div class="flex-1 pl-2">
-                        <h4 class="text-ink text-base font-bold mb-1">${item.name}</h4>
-                        <span class="text-ember font-semibold text-sm">Rp ${item.price.toLocaleString('id-ID')}</span>
-                    </div>
-                    <div class="flex items-center gap-3 bg-cream rounded-lg p-1 border border-taupe shadow-inner">
-                        <button onclick="updateCartQuantity('${item.id}', -1)" class="text-stone hover:text-ink hover:bg-taupe w-7 h-7 rounded flex items-center justify-center transition-colors"><i class="fa-solid fa-minus text-xs"></i></button>
-                        <span class="text-ink text-sm font-bold w-4 text-center">${item.qty}</span>
-                        <button onclick="updateCartQuantity('${item.id}', 1)" class="text-ember bg-ember/10 hover:bg-ember hover:text-white w-7 h-7 rounded flex items-center justify-center transition-colors"><i class="fa-solid fa-plus text-xs"></i></button>
-                    </div>
+        // Bangun semua HTML dulu di memori, baru assign SEKALI ke DOM.
+        // (Sebelumnya pakai innerHTML += di dalam loop → tiap item baru
+        // memaksa browser re-parse ulang seluruh list dari awal, jadi
+        // makin banyak item makin lag. Ini juga kepanggil tiap kali
+        // user mengetik nama, jadi ngetik pun kerasa patah-patah.)
+        list.innerHTML = cart.map(item => `
+            <div class="flex justify-between items-center bg-creamCard p-4 rounded-xl border border-taupe shadow-sm relative overflow-hidden group">
+                <div class="absolute left-0 top-0 bottom-0 w-1 bg-taupe group-hover:bg-ember transition-colors"></div>
+                <div class="flex-1 pl-2">
+                    <h4 class="text-ink text-base font-bold mb-1">${item.name}</h4>
+                    <span class="text-ember font-semibold text-sm">Rp ${item.price.toLocaleString('id-ID')}</span>
                 </div>
-            `;
-        });
+                <div class="flex items-center gap-3 bg-cream rounded-lg p-1 border border-taupe shadow-inner">
+                    <button onclick="updateCartQuantity('${item.id}', -1)" class="text-stone hover:text-ink hover:bg-taupe w-7 h-7 rounded flex items-center justify-center transition-colors"><i class="fa-solid fa-minus text-xs"></i></button>
+                    <span class="text-ink text-sm font-bold w-4 text-center">${item.qty}</span>
+                    <button onclick="updateCartQuantity('${item.id}', 1)" class="text-ember bg-ember/10 hover:bg-ember hover:text-white w-7 h-7 rounded flex items-center justify-center transition-colors"><i class="fa-solid fa-plus text-xs"></i></button>
+                </div>
+            </div>
+        `).join('');
     }
 
     // Kalkulasi Total
