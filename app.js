@@ -25,29 +25,112 @@ let locationDetected = false;
 
 /* ==========================================================
    STOK MENU: Habis / Tersedia + Mode Admin
+   Sinkron real-time via Firebase Firestore, dengan fallback
+   ke localStorage kalau koneksi/Firebase bermasalah.
    ========================================================== */
 const STOCK_STORAGE_KEY = 'senthirStockState';
 const ADMIN_SESSION_KEY = 'senthirAdminMode';
 const ADMIN_PIN = '1908'; // Ganti PIN ini sesuai kebutuhan kamu
 
+const firebaseConfig = {
+    apiKey: "AIzaSyCr3MIFPDqfd0_Cg2dwVwdBniBRb12kS4A",
+    authDomain: "angkringan-senthir.firebaseapp.com",
+    projectId: "angkringan-senthir",
+    storageBucket: "angkringan-senthir.firebasestorage.app",
+    messagingSenderId: "936417557991",
+    appId: "1:936417557991:web:8fbc4f6ca347fa795ad142"
+};
+
+let firestoreDb = null;
+let firebaseReady = false;
+const STOCK_DOC_PATH = ['shopData', 'stock']; // koleksi 'shopData', dokumen 'stock'
+
 let stockState = {};   // { itemId: true } → true artinya item tsb HABIS
 let isAdminMode = false;
+let adminFilter = 'all'; // 'all' | 'tersedia' | 'habis' — filter list di dashboard admin
+
+function initFirebase() {
+    try {
+        if (typeof firebase === 'undefined') throw new Error('SDK Firebase belum termuat');
+        firebase.initializeApp(firebaseConfig);
+        firestoreDb = firebase.firestore();
+        firebaseReady = true;
+    } catch (e) {
+        console.warn('Firebase gagal diinisialisasi, pakai penyimpanan lokal saja:', e);
+        firebaseReady = false;
+        updateSyncStatusUI('offline');
+    }
+}
 
 function loadStockState() {
+    // Muat cache lokal dulu biar tampilan langsung ada isinya tanpa nunggu network
     try {
         const saved = localStorage.getItem(STOCK_STORAGE_KEY);
         stockState = saved ? JSON.parse(saved) : {};
     } catch (e) {
-        console.warn('Gagal membaca status stok:', e);
+        console.warn('Gagal membaca cache stok lokal:', e);
         stockState = {};
     }
+
+    if (!firebaseReady) return;
+
+    updateSyncStatusUI('connecting');
+
+    // Dengarkan perubahan stok secara real-time dari Firestore.
+    // Setiap kali admin update di perangkat manapun, semua pelanggan yang
+    // sedang membuka web langsung menerima data terbaru lewat listener ini.
+    firestoreDb.collection(STOCK_DOC_PATH[0]).doc(STOCK_DOC_PATH[1]).onSnapshot((docSnap) => {
+        stockState = (docSnap.exists && docSnap.data().items) ? docSnap.data().items : {};
+        try {
+            localStorage.setItem(STOCK_STORAGE_KEY, JSON.stringify(stockState));
+        } catch (e) { /* abaikan, cache lokal cuma fallback */ }
+        updateSyncStatusUI('live');
+        refreshAllMenuRenders();
+    }, (error) => {
+        console.warn('Gagal sinkron stok dari server, tetap pakai data lokal:', error);
+        updateSyncStatusUI('offline');
+    });
 }
 
 function saveStockState() {
+    // Simpan ke cache lokal dulu biar responsif meski network lambat
     try {
         localStorage.setItem(STOCK_STORAGE_KEY, JSON.stringify(stockState));
     } catch (e) {
-        console.warn('Gagal menyimpan status stok:', e);
+        console.warn('Gagal menyimpan status stok ke cache lokal:', e);
+    }
+
+    if (!firebaseReady) return;
+
+    updateSyncStatusUI('connecting');
+    firestoreDb.collection(STOCK_DOC_PATH[0]).doc(STOCK_DOC_PATH[1]).set({ items: stockState })
+        .then(() => updateSyncStatusUI('live'))
+        .catch((error) => {
+            console.warn('Gagal menyimpan stok ke server, perubahan hanya tersimpan lokal:', error);
+            updateSyncStatusUI('offline');
+        });
+}
+
+// Tampilkan status sinkronisasi di dashboard admin (live / connecting / offline)
+function updateSyncStatusUI(status) {
+    const badge = document.getElementById('adminSyncStatus');
+    if (!badge) return;
+    const dot = badge.querySelector('.sync-dot');
+    const label = badge.querySelector('.sync-label');
+    if (!dot || !label) return;
+
+    if (status === 'live') {
+        dot.className = 'sync-dot w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse';
+        label.textContent = 'Tersinkron ke semua perangkat';
+        badge.className = 'inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full border border-green-500/30 bg-green-500/10 text-green-400';
+    } else if (status === 'connecting') {
+        dot.className = 'sync-dot w-1.5 h-1.5 rounded-full bg-flame animate-pulse';
+        label.textContent = 'Menyimpan...';
+        badge.className = 'inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full border border-flame/30 bg-flame/10 text-flame';
+    } else {
+        dot.className = 'sync-dot w-1.5 h-1.5 rounded-full bg-red-400';
+        label.textContent = 'Mode offline (lokal saja)';
+        badge.className = 'inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full border border-red-500/30 bg-red-500/10 text-red-400';
     }
 }
 
@@ -78,37 +161,303 @@ function loadAdminMode() {
 
 function updateAdminModeUI() {
     const chip = document.getElementById('adminModeChip');
-    if (!chip) return;
-    if (isAdminMode) {
-        chip.classList.remove('hidden');
-        chip.classList.add('inline-flex');
-    } else {
-        chip.classList.add('hidden');
-        chip.classList.remove('inline-flex');
+    const brandLabel = document.getElementById('brandAdminLabel');
+    if (chip) {
+        if (isAdminMode) {
+            chip.classList.remove('hidden');
+            chip.classList.add('inline-flex');
+        } else {
+            chip.classList.add('hidden');
+            chip.classList.remove('inline-flex');
+        }
+    }
+    if (brandLabel) {
+        brandLabel.textContent = isAdminMode ? 'Buka Dashboard Admin' : 'Panel Admin';
     }
 }
 
-function promptAdminLogin() {
+// Dipanggil dari opsi "Panel Admin" di dropdown nama toko / link footer.
+// Kalau belum login -> buka modal PIN kustom. Kalau sudah login -> langsung buka dashboard.
+function handleAdminMenuClick() {
+    closeBrandMenu();
     if (isAdminMode) {
-        if (confirm('Keluar dari mode Kelola Stok?')) {
-            isAdminMode = false;
-            sessionStorage.removeItem(ADMIN_SESSION_KEY);
-            updateAdminModeUI();
-            refreshAllMenuRenders();
-        }
+        switchView('admin');
         return;
     }
-    const pin = prompt('Masukkan PIN Admin untuk kelola stok:');
-    if (pin === null) return;
+    openAdminPinModal();
+}
+
+/* ==========================================================
+   Modal PIN Admin (pengganti prompt() bawaan browser)
+   ========================================================== */
+function getPinBoxes() {
+    return Array.from(document.querySelectorAll('#adminPinBoxes .pin-box'));
+}
+
+function openAdminPinModal() {
+    const modal = document.getElementById('adminPinModal');
+    const content = document.getElementById('adminPinModalContent');
+    if (!modal || !content) return;
+
+    // Reset state tiap kali dibuka
+    const boxes = getPinBoxes();
+    boxes.forEach(b => (b.value = ''));
+    document.getElementById('adminPinError')?.classList.add('opacity-0');
+
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    requestAnimationFrame(() => {
+        content.classList.remove('scale-95');
+    });
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => boxes[0]?.focus(), 200);
+}
+
+function closeAdminPinModal() {
+    const modal = document.getElementById('adminPinModal');
+    const content = document.getElementById('adminPinModalContent');
+    if (!modal || !content) return;
+    content.classList.add('scale-95');
+    setTimeout(() => {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        document.body.style.overflow = '';
+    }, 250);
+}
+
+function showAdminPinError(message) {
+    const err = document.getElementById('adminPinError');
+    const content = document.getElementById('adminPinModalContent');
+    if (err) {
+        if (message) err.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-1"></i>${message}`;
+        err.classList.remove('opacity-0');
+    }
+    // Efek shake singkat biar terasa ada validasi, bukan cuma teks statis
+    if (content) {
+        content.classList.remove('animate-shake');
+        void content.offsetWidth; // restart animasi
+        content.classList.add('animate-shake');
+    }
+    const boxes = getPinBoxes();
+    boxes.forEach(b => (b.value = ''));
+    boxes[0]?.focus();
+}
+
+function submitAdminPin() {
+    const boxes = getPinBoxes();
+    const pin = boxes.map(b => b.value).join('');
+
+    if (pin.length < boxes.length) {
+        showAdminPinError('Lengkapi 4 digit PIN terlebih dahulu.');
+        return;
+    }
+
     if (pin === ADMIN_PIN) {
         isAdminMode = true;
         sessionStorage.setItem(ADMIN_SESSION_KEY, '1');
         updateAdminModeUI();
         refreshAllMenuRenders();
-        alert('Mode Kelola Stok aktif ✅\nSekarang tiap menu punya tombol kecil untuk ditandai "Habis" / "Tersedia".');
+        closeAdminPinModal();
+        switchView('admin');
     } else {
-        alert('PIN salah.');
+        showAdminPinError('PIN salah, coba lagi.');
     }
+}
+
+// Auto-advance antar kotak PIN + submit otomatis saat 4 digit terisi
+function initAdminPinBoxes() {
+    const boxes = getPinBoxes();
+    if (boxes.length === 0) return;
+
+    boxes.forEach((box, idx) => {
+        box.addEventListener('input', () => {
+            box.value = box.value.replace(/[^0-9]/g, '').slice(0, 1);
+            document.getElementById('adminPinError')?.classList.add('opacity-0');
+            if (box.value && idx < boxes.length - 1) {
+                boxes[idx + 1].focus();
+            }
+            if (boxes.every(b => b.value)) {
+                setTimeout(submitAdminPin, 120);
+            }
+        });
+
+        box.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !box.value && idx > 0) {
+                boxes[idx - 1].focus();
+            }
+            if (e.key === 'Enter') {
+                submitAdminPin();
+            }
+        });
+
+        box.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const digits = (e.clipboardData.getData('text') || '').replace(/[^0-9]/g, '').split('');
+            boxes.forEach((b, i) => (b.value = digits[i] || ''));
+            const nextEmpty = boxes.find(b => !b.value);
+            (nextEmpty || boxes[boxes.length - 1]).focus();
+            if (boxes.every(b => b.value)) {
+                setTimeout(submitAdminPin, 120);
+            }
+        });
+    });
+}
+
+// Tutup modal PIN kalau klik area gelap di luar kartu
+document.addEventListener('click', (event) => {
+    const modal = document.getElementById('adminPinModal');
+    const content = document.getElementById('adminPinModalContent');
+    if (!modal || modal.classList.contains('pointer-events-none')) return;
+    if (event.target === modal && content && !content.contains(event.target)) {
+        closeAdminPinModal();
+    }
+});
+
+// Logout dari dashboard admin, kembali ke tampilan pelanggan biasa
+function adminLogout() {
+    if (!confirm('Keluar dari Dashboard Admin?')) return;
+    isAdminMode = false;
+    sessionStorage.removeItem(ADMIN_SESSION_KEY);
+    updateAdminModeUI();
+    refreshAllMenuRenders();
+    switchView('home');
+}
+
+/* ==========================================================
+   Dropdown nama toko (Senthir) di navbar
+   ========================================================== */
+function toggleBrandMenu(event) {
+    if (event) event.stopPropagation();
+    const dropdown = document.getElementById('brandDropdown');
+    const trigger = document.getElementById('brandTrigger');
+    const chevron = document.getElementById('brandChevron');
+    if (!dropdown) return;
+    const isOpen = !dropdown.classList.contains('hidden');
+    if (isOpen) {
+        closeBrandMenu();
+    } else {
+        dropdown.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            dropdown.classList.remove('opacity-0', 'scale-95');
+        });
+        trigger?.setAttribute('aria-expanded', 'true');
+        chevron?.classList.add('rotate-180');
+    }
+}
+
+function closeBrandMenu() {
+    const dropdown = document.getElementById('brandDropdown');
+    const trigger = document.getElementById('brandTrigger');
+    const chevron = document.getElementById('brandChevron');
+    if (!dropdown || dropdown.classList.contains('hidden')) return;
+    dropdown.classList.add('opacity-0', 'scale-95');
+    trigger?.setAttribute('aria-expanded', 'false');
+    chevron?.classList.remove('rotate-180');
+    setTimeout(() => dropdown.classList.add('hidden'), 150);
+}
+
+// Tutup dropdown kalau klik di luar area-nya
+document.addEventListener('click', (event) => {
+    const dropdown = document.getElementById('brandDropdown');
+    const trigger = document.getElementById('brandTrigger');
+    if (!dropdown || dropdown.classList.contains('hidden')) return;
+    if (dropdown.contains(event.target) || trigger?.contains(event.target)) return;
+    closeBrandMenu();
+});
+
+/* ==========================================================
+   Dashboard Admin — daftar semua item + filter/pencarian
+   ========================================================== */
+function setAdminFilter(filter) {
+    adminFilter = filter;
+    ['all', 'tersedia', 'habis'].forEach(f => {
+        const btn = document.getElementById('adminFilter' + f.charAt(0).toUpperCase() + f.slice(1));
+        if (!btn) return;
+        if (f === filter) {
+            btn.classList.add('bg-ember', 'text-darker', 'border-ember');
+            btn.classList.remove('text-parchment/70', 'border-wood');
+        } else {
+            btn.classList.remove('bg-ember', 'text-darker', 'border-ember');
+            btn.classList.add('text-parchment/70', 'border-wood');
+        }
+    });
+    renderAdminDashboard();
+}
+
+function adminToggleRowClass(outOfStock) {
+    return outOfStock
+        ? 'bg-red-500/5 border-red-500/20'
+        : 'bg-wood/20 border-wood';
+}
+
+function renderAdminItemRow(id, name, price) {
+    const outOfStock = isOutOfStock(id);
+    return `
+        <div class="flex items-center justify-between gap-4 px-4 py-3.5 rounded-xl border ${adminToggleRowClass(outOfStock)} transition-colors">
+            <div class="min-w-0">
+                <p class="font-semibold text-parchment truncate">${name}</p>
+                <p class="text-xs text-parchment/50 mt-0.5">Rp ${price.toLocaleString('id-ID')}</p>
+            </div>
+            <div class="flex items-center gap-3 shrink-0">
+                <span class="hidden sm:inline-block text-[11px] font-bold px-2.5 py-1 rounded-full ${outOfStock ? 'bg-red-500/10 text-red-400' : 'bg-green-500/10 text-green-400'}">
+                    ${outOfStock ? 'Habis' : 'Tersedia'}
+                </span>
+                <button onclick="toggleItemStock('${id}', event); renderAdminDashboard();" role="switch" aria-checked="${!outOfStock}" class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${outOfStock ? 'bg-stone/40' : 'bg-green-500'}">
+                    <span class="inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${outOfStock ? 'translate-x-1' : 'translate-x-6'}"></span>
+                </button>
+            </div>
+        </div>`;
+}
+
+function renderAdminDashboard() {
+    const list = document.getElementById('adminItemsList');
+    if (!list) return;
+
+    const query = (document.getElementById('adminSearchInput')?.value || '').trim().toLowerCase();
+
+    // Kumpulkan semua item (best seller + semua varian) jadi satu daftar flat dengan info kategori
+    const allItems = [{ id: bestSellerMenu.id, name: bestSellerMenu.name, price: bestSellerMenu.price, group: 'Favorit Pelanggan' }];
+    menuData.forEach(group => {
+        group.variants.forEach(v => {
+            allItems.push({ id: v.id, name: v.name, price: v.price, group: group.groupName });
+        });
+    });
+
+    // Statistik
+    const totalHabis = allItems.filter(it => isOutOfStock(it.id)).length;
+    document.getElementById('adminStatTotal').textContent = allItems.length;
+    document.getElementById('adminStatHabis').textContent = totalHabis;
+    document.getElementById('adminStatTersedia').textContent = allItems.length - totalHabis;
+    document.getElementById('adminStatGroup').textContent = menuData.length + 1;
+
+    // Filter pencarian + status
+    let filtered = allItems.filter(it => it.name.toLowerCase().includes(query));
+    if (adminFilter === 'tersedia') filtered = filtered.filter(it => !isOutOfStock(it.id));
+    if (adminFilter === 'habis') filtered = filtered.filter(it => isOutOfStock(it.id));
+
+    if (filtered.length === 0) {
+        list.innerHTML = `<div class="text-center py-16 text-parchment/40">
+            <i class="fa-solid fa-box-open text-3xl mb-3"></i>
+            <p class="text-sm">Tidak ada menu yang cocok.</p>
+        </div>`;
+        return;
+    }
+
+    // Kelompokkan ulang berdasarkan kategori, sesuai urutan menuData
+    const groupOrder = ['Favorit Pelanggan', ...menuData.map(g => g.groupName)];
+    let html = '';
+    groupOrder.forEach(groupName => {
+        const itemsInGroup = filtered.filter(it => it.group === groupName);
+        if (itemsInGroup.length === 0) return;
+        html += `
+            <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-parchment/40 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-tag text-ember/60"></i> ${groupName}
+                </h3>
+                <div class="space-y-2">
+                    ${itemsInGroup.map(it => renderAdminItemRow(it.id, it.name, it.price)).join('')}
+                </div>
+            </div>`;
+    });
+    list.innerHTML = html;
 }
 
 function refreshAllMenuRenders() {
@@ -270,8 +619,10 @@ document.addEventListener('DOMContentLoaded', () => {
     validateOperatingHours();
     setInterval(validateOperatingHours, 1000); 
     loadCartFromStorage();
+    initFirebase();
     loadStockState();
     loadAdminMode();
+    initAdminPinBoxes();
     renderMenuGroups();
     renderFeaturedMenu();
     initKeunggulanReveal();
@@ -292,9 +643,23 @@ document.addEventListener('DOMContentLoaded', () => {
 function switchView(view) {
     const homeView = document.getElementById('homeView');
     const menuView = document.getElementById('menuView');
+    const adminView = document.getElementById('adminView');
     const navHome = document.getElementById('navHome');
     const navMenu = document.getElementById('navMenu');
-    
+
+    if (view === 'admin') {
+        if (!isAdminMode) { handleAdminMenuClick(); return; }
+        homeView.classList.add('hidden');
+        menuView.classList.add('hidden');
+        adminView.classList.remove('hidden');
+        setAdminFilter('all');
+        renderAdminDashboard();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+    }
+
+    adminView.classList.add('hidden');
+
     if (view === 'menu') {
         homeView.classList.add('hidden');
         menuView.classList.remove('hidden');
