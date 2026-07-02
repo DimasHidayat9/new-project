@@ -29,8 +29,6 @@ let locationDetected = false;
    ke localStorage kalau koneksi/Firebase bermasalah.
    ========================================================== */
 const STOCK_STORAGE_KEY = 'senthirStockState';
-const ADMIN_SESSION_KEY = 'senthirAdminMode';
-const ADMIN_PIN = '1908'; // Ganti PIN ini sesuai kebutuhan kamu
 
 const firebaseConfig = {
     apiKey: "AIzaSyCr3MIFPDqfd0_Cg2dwVwdBniBRb12kS4A",
@@ -42,6 +40,7 @@ const firebaseConfig = {
 };
 
 let firestoreDb = null;
+let firebaseAuth = null;
 let firebaseReady = false;
 const STOCK_DOC_PATH = ['shopData', 'stock']; // koleksi 'shopData', dokumen 'stock'
 
@@ -54,7 +53,16 @@ function initFirebase() {
         if (typeof firebase === 'undefined') throw new Error('SDK Firebase belum termuat');
         firebase.initializeApp(firebaseConfig);
         firestoreDb = firebase.firestore();
+        firebaseAuth = firebase.auth();
         firebaseReady = true;
+
+        // Status admin sekarang ditentukan oleh sesi login Firebase Auth
+        // (bukan lagi PIN + sessionStorage), jadi aman dicek dari Firestore rules.
+        firebaseAuth.onAuthStateChanged((user) => {
+            isAdminMode = !!user;
+            updateAdminModeUI();
+            refreshAllMenuRenders();
+        });
     } catch (e) {
         console.warn('Firebase gagal diinisialisasi, pakai penyimpanan lokal saja:', e);
         firebaseReady = false;
@@ -154,11 +162,6 @@ function toggleItemStock(itemId, event) {
     refreshAllMenuRenders();
 }
 
-function loadAdminMode() {
-    isAdminMode = sessionStorage.getItem(ADMIN_SESSION_KEY) === '1';
-    updateAdminModeUI();
-}
-
 function updateAdminModeUI() {
     const chip = document.getElementById('adminModeChip');
     const brandLabel = document.getElementById('brandAdminLabel');
@@ -188,20 +191,19 @@ function handleAdminMenuClick() {
 }
 
 /* ==========================================================
-   Modal PIN Admin (pengganti prompt() bawaan browser)
+   Modal Login Admin — pakai Firebase Authentication
+   (menggantikan PIN client-side lama yang tidak aman)
    ========================================================== */
-function getPinBoxes() {
-    return Array.from(document.querySelectorAll('#adminPinBoxes .pin-box'));
-}
-
 function openAdminPinModal() {
     const modal = document.getElementById('adminPinModal');
     const content = document.getElementById('adminPinModalContent');
     if (!modal || !content) return;
 
     // Reset state tiap kali dibuka
-    const boxes = getPinBoxes();
-    boxes.forEach(b => (b.value = ''));
+    const emailInput = document.getElementById('adminEmailInput');
+    const passInput = document.getElementById('adminPasswordInput');
+    if (emailInput) emailInput.value = '';
+    if (passInput) passInput.value = '';
     document.getElementById('adminPinError')?.classList.add('opacity-0');
 
     modal.classList.remove('opacity-0', 'pointer-events-none');
@@ -209,7 +211,7 @@ function openAdminPinModal() {
         content.classList.remove('scale-95');
     });
     document.body.style.overflow = 'hidden';
-    setTimeout(() => boxes[0]?.focus(), 200);
+    setTimeout(() => emailInput?.focus(), 200);
 }
 
 function closeAdminPinModal() {
@@ -236,72 +238,40 @@ function showAdminPinError(message) {
         void content.offsetWidth; // restart animasi
         content.classList.add('animate-shake');
     }
-    const boxes = getPinBoxes();
-    boxes.forEach(b => (b.value = ''));
-    boxes[0]?.focus();
 }
 
-function submitAdminPin() {
-    const boxes = getPinBoxes();
-    const pin = boxes.map(b => b.value).join('');
+function submitAdminLogin() {
+    const emailInput = document.getElementById('adminEmailInput');
+    const passInput = document.getElementById('adminPasswordInput');
+    const btn = document.getElementById('adminLoginBtn');
+    const email = (emailInput?.value || '').trim();
+    const password = passInput?.value || '';
 
-    if (pin.length < boxes.length) {
-        showAdminPinError('Lengkapi 4 digit PIN terlebih dahulu.');
+    if (!firebaseAuth) {
+        showAdminPinError('Koneksi ke server bermasalah, coba lagi.');
+        return;
+    }
+    if (!email || !password) {
+        showAdminPinError('Isi email dan password terlebih dahulu.');
         return;
     }
 
-    if (pin === ADMIN_PIN) {
-        isAdminMode = true;
-        sessionStorage.setItem(ADMIN_SESSION_KEY, '1');
-        updateAdminModeUI();
-        refreshAllMenuRenders();
-        closeAdminPinModal();
-        switchView('admin');
-    } else {
-        showAdminPinError('PIN salah, coba lagi.');
-    }
+    if (btn) btn.disabled = true;
+    firebaseAuth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+            // isAdminMode di-set otomatis lewat onAuthStateChanged di initFirebase()
+            closeAdminPinModal();
+            switchView('admin');
+        })
+        .catch(() => {
+            showAdminPinError('Email atau password salah.');
+        })
+        .finally(() => {
+            if (btn) btn.disabled = false;
+        });
 }
 
-// Auto-advance antar kotak PIN + submit otomatis saat 4 digit terisi
-function initAdminPinBoxes() {
-    const boxes = getPinBoxes();
-    if (boxes.length === 0) return;
-
-    boxes.forEach((box, idx) => {
-        box.addEventListener('input', () => {
-            box.value = box.value.replace(/[^0-9]/g, '').slice(0, 1);
-            document.getElementById('adminPinError')?.classList.add('opacity-0');
-            if (box.value && idx < boxes.length - 1) {
-                boxes[idx + 1].focus();
-            }
-            if (boxes.every(b => b.value)) {
-                setTimeout(submitAdminPin, 120);
-            }
-        });
-
-        box.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && !box.value && idx > 0) {
-                boxes[idx - 1].focus();
-            }
-            if (e.key === 'Enter') {
-                submitAdminPin();
-            }
-        });
-
-        box.addEventListener('paste', (e) => {
-            e.preventDefault();
-            const digits = (e.clipboardData.getData('text') || '').replace(/[^0-9]/g, '').split('');
-            boxes.forEach((b, i) => (b.value = digits[i] || ''));
-            const nextEmpty = boxes.find(b => !b.value);
-            (nextEmpty || boxes[boxes.length - 1]).focus();
-            if (boxes.every(b => b.value)) {
-                setTimeout(submitAdminPin, 120);
-            }
-        });
-    });
-}
-
-// Tutup modal PIN kalau klik area gelap di luar kartu
+// Tutup modal login kalau klik area gelap di luar kartu
 document.addEventListener('click', (event) => {
     const modal = document.getElementById('adminPinModal');
     const content = document.getElementById('adminPinModalContent');
@@ -311,13 +281,18 @@ document.addEventListener('click', (event) => {
     }
 });
 
+// Enter di kolom password langsung submit
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('adminPasswordInput')?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') submitAdminLogin();
+    });
+});
+
 // Logout dari dashboard admin, kembali ke tampilan pelanggan biasa
 function adminLogout() {
     if (!confirm('Keluar dari Dashboard Admin?')) return;
-    isAdminMode = false;
-    sessionStorage.removeItem(ADMIN_SESSION_KEY);
-    updateAdminModeUI();
-    refreshAllMenuRenders();
+    firebaseAuth?.signOut();
+    // isAdminMode = false dan refresh UI ditangani otomatis oleh onAuthStateChanged
     switchView('home');
 }
 
@@ -621,8 +596,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCartFromStorage();
     initFirebase();
     loadStockState();
-    loadAdminMode();
-    initAdminPinBoxes();
     renderMenuGroups();
     renderFeaturedMenu();
     initKeunggulanReveal();
