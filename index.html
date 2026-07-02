@@ -15,6 +15,9 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1C1410">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Senthir">
 
     <!-- Open Graph / Facebook & WhatsApp Preview -->
     <meta property="og:type" content="restaurant.menu">
@@ -182,7 +185,7 @@
                     </svg>
                     Senthir
                 </a>
-                <span id="shopStatusBadge" class="hidden md:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors">
+                <span id="shopStatusBadge" class="inline-flex items-center gap-1.5 text-[11px] md:text-xs font-semibold px-2.5 md:px-3 py-1 md:py-1.5 rounded-full border transition-colors">
                     <span id="shopStatusDot" class="w-1.5 h-1.5 rounded-full"></span>
                     <span id="shopStatusText">Mengecek jam buka...</span>
                 </span>
@@ -976,6 +979,13 @@
             </div>
         </div>
     </div>
+    <!-- Tombol Pasang Aplikasi (PWA) — muncul otomatis kalau browser mendukung install -->
+    <button id="installAppBtn" onclick="installApp()" aria-label="Pasang Aplikasi"
+        class="hidden fixed left-5 bottom-24 md:bottom-8 z-[45] items-center gap-2 bg-ember text-dark font-bold px-4 py-3 rounded-full shadow-glow hover:bg-emberHover transition-all">
+        <i class="fa-solid fa-download"></i>
+        <span class="text-sm">Pasang Aplikasi</span>
+    </button>
+
     <!-- Floating WA Button -->
     <div id="floatingWA" class="fixed right-5 bottom-24 md:bottom-8 z-[45] flex flex-col items-end gap-3">
 
