@@ -31,12 +31,12 @@ let locationDetected = false;
 const STOCK_STORAGE_KEY = 'senthirStockState';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCr3MIFPDqfd0_Cg2dwVwdBniBRb12kS4A",
-    authDomain: "angkringan-senthir.firebaseapp.com",
-    projectId: "angkringan-senthir",
-    storageBucket: "angkringan-senthir.firebasestorage.app",
-    messagingSenderId: "936417557991",
-    appId: "1:936417557991:web:8fbc4f6ca347fa795ad142"
+    apiKey: "AIzaSyB6wz8Yri2buxfS_S-Ohcx5yhITtX-92Kw",
+    authDomain: "angkringan-senthir-77c51.firebaseapp.com",
+    projectId: "angkringan-senthir-77c51",
+    storageBucket: "angkringan-senthir-77c51.firebasestorage.app",
+    messagingSenderId: "203823634016",
+    appId: "1:203823634016:web:2b323aa8e3b293b9099505"
 };
 
 let firestoreDb = null;
